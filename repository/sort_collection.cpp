@@ -210,6 +210,10 @@ void Solution::RadixSort(int *arr, int size, int (*cmp)(int, int ))
 		// copy 回来
 		memcpy(arr, tmp_arr, size * sizeof(int));
 	}
+
+	free(tmp_arr);
+	free(count);
+	free(pos);
 }
 
 int main(int argc, char *argv[]) {
