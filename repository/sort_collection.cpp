@@ -8,6 +8,8 @@
 #include <ctime>
 #include <cstring>
 #include <cmath>
+#include <type_traits>
+#include <utility>
 
 #include <iostream>
 
@@ -43,11 +45,22 @@ public:
 	void ShellSort(int *arr, int size, int (*cmp)(int, int ));
 	// 基数排序 (计数基数排序)
 	void RadixSort(int *arr, int size, int (*cmp)(int, int ));
+	// 归并排序
+	void MergeSort(int *arr, int size, int (*cmp)(int, int ));
+	// 快速排序
+	void QuickSort(int *arr, int size, int (*cmp)(int, int ));
 
 private:
-	void ShellInsert(int * arr, int size, int (*cmp)(int, int), int d);
-	void CounterRadixSort(int *from, int * to, int size, int (*cmp)(int, int), int *count, int *pos, int r, int m);
+	void ShellInsert(int *arr, int size, int (*cmp)(int, int), int d);
+	void CounterRadixSort(int *from, int *to, int size, int (*cmp)(int, int), int *count, int *pos, int r, int m);
+	int Partition(int *arr, int low, int high, int (*cmp)(int, int));
+	void QuickSortCore(int *arr, int low, int high, int (*cmp)(int, int ));
 
+public:
+	// 查找
+	int SequentialSearch(int *arr, int size, int key);
+	int BinarySearch(int *arr, int size, int key);
+		
 };
 
 void Solution::BubbleSort(int *arr, int size, int (*cmp)(int, int)) 
@@ -216,6 +229,74 @@ void Solution::RadixSort(int *arr, int size, int (*cmp)(int, int ))
 	free(pos);
 }
 
+// 归并排序
+void Solution::MergeSort(int *arr, int size, int (*cmp)(int, int ))
+{
+
+
+}
+
+int Solution::Partition(int *arr, int low, int high, int (*cmp)(int, int))
+{
+	int pivot = low;
+	for (int i = low + 1; i <= high; ++i) {
+		if (cmp(arr[i], arr[low]) < 0) {
+			std::swap(arr[++pivot], arr[i]); 
+		}	
+	}
+	std::swap(arr[pivot], arr[low]);
+	return pivot;
+}
+
+void Solution::QuickSortCore(int *arr, int low, int high, int (*cmp)(int, int ))
+{
+	if (low >= high) {
+		return ;
+	}	
+	int pivot = Partition(arr, low, high, cmp); 
+	if (low < pivot - 1) QuickSortCore(arr, low, pivot - 1, cmp);	
+	if (pivot + 1 < high) QuickSortCore(arr, pivot + 1, high, cmp);	
+}
+
+// 快速排序
+void Solution::QuickSort(int *arr, int size, int (*cmp)(int, int ))
+{		
+	QuickSortCore(arr, 0, size - 1, cmp);
+}
+
+
+
+int Solution::SequentialSearch(int *arr, int size, int key)
+{
+	for (int i = 0; i < size; ++i) {
+		if (key == arr[i]) {
+			return i;
+		}	
+	}
+	return -1;
+}
+
+// 前提是arr有序
+int Solution::BinarySearch(int *arr, int size, int key)
+{
+	int low = 0;		
+	int high = size - 1;
+
+	while (low <= high) {
+		int mid = (low + high) >> 1;
+		if (key == arr[mid]) {
+			return mid;
+		} else if (key < arr[mid]) {
+			high = mid - 1;		
+		} else {
+			low = mid + 1;
+		}
+	}		
+
+	return -1;
+}
+
+
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
 		cout << "usage : " << argv[0] << " count" << endl;
@@ -234,7 +315,21 @@ int main(int argc, char *argv[]) {
 	}	
 
 	Solution obj;
-	obj.RadixSort(arr, count, Compare);
+	obj.QuickSort(arr, count, Compare);
 	PrintArray(arr, count);	
+
+	int key = arr[random() % count];
+	clock_t beg = clock();
+	int f1 = obj.SequentialSearch(arr, count, key);  
+	clock_t end = clock();
+	cout << "key = "<< key << ", idx = " << f1 << ", value = " << arr[f1] << ", SequentialSearch times:" << static_cast<double>(end - beg) / CLOCKS_PER_SEC << endl;
+
+	beg = clock();
+	int f2 = obj.BinarySearch(arr, count, key);  
+	end = clock();
+	cout << "key = "<< key << ", idx = " << f2 << ", value = " << arr[f2] << ", BinarySearch times:" << static_cast<double>(end - beg) / CLOCKS_PER_SEC << endl;
+
+
+
 	return 0;
 }
