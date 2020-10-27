@@ -45,6 +45,20 @@ void (*func3(void (*fp)(string)))(string ) {
 	return fp;
 }
 
+
+// 函数指针类型别名
+typedef void (*FuncType)(string); 
+
+// 函数func4, 尾置返回值类型 
+// 参数 :函数指针
+// 返回值 : 函数指针
+auto func4(void (*fp)(string)) -> FuncType{
+	cout << "func 4 ...." << endl;
+	fp("in func4, trailing return type");
+	return fp;
+}
+
+
 int main(int argc, char *argv[]) {
 	
 	int arr[] = {1,2,3,4,5,6};
@@ -66,6 +80,9 @@ int main(int argc, char *argv[]) {
 	void (*func_ptr)(string) = func3(test); 
 	func_ptr("in main");
 
+	cout << "--------------------------------" << endl;	
+	FuncType func_ptr_alias = func4(test); 
+	func_ptr_alias("in main, trailing return type");
 
 	return 0;
 }
