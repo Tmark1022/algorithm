@@ -17,6 +17,13 @@ class Solution {
 public:
 	void foo();
 
+	// const成员函数返回的是const 对象引用
+	const Solution& my() const {
+		return  *this;
+	}
+
+
+
 };
 
 // 类成员函数声明只能在类内， 类外只能存在成员函数的定义
