@@ -13,7 +13,7 @@ using std::endl;
 void func(int, int);
 class Solution {
 	// 友元仅仅指定了访问权限（能访问该类的私有成员等）， 但不是真正意义上的函数声明。
-	friend void func(int, int);
+	//friend void func(int, int);
 public:
 	void foo();
 
@@ -22,7 +22,14 @@ public:
 		return  *this;
 	}
 
+	Solution(int a, int b = 99):a(a), b(b) {
+		cout << "call solution " << endl;
+		
+	}
 
+
+public:
+	int a, b;
 
 };
 
@@ -32,10 +39,17 @@ public:
 void Solution::foo()
 {
 	cout << "hello world" << endl;
-	func(10, 20);
+	//func(10, 20);
+}
+
+void Print(const Solution &obj) {
+	cout << obj.a << ", " << obj.b << endl;
 }
 
 int main(int argc, char *argv[]) {
+
+	Print(10);
+
 
 	return 0;
 }
