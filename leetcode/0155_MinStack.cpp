@@ -15,34 +15,175 @@ solution 4: 使用一个栈和一个min_val变量实现，栈中保存的是x-mi
 */
 
 #include <iostream>
+#include <stack>
+#include <cmath>
+#include <climits>
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::stack;
 
+
+/*
+ // solution 1
+ class MinStack {
+ private :
+         stack<int> stk, stk_min;
+
+ public:
+     MinStack() {
+
+     }
+
+     void push(int x) {
+         stk.push(x);
+         if (stk_min.empty() || x <= stk_min.top()) {
+                 stk_min.push(x);
+         }
+     }
+
+     void pop() {
+         if (stk.top() == stk_min.top()) {
+                 stk_min.pop();
+         }
+         stk.pop();
+     }
+
+     int top() {
+         return stk.top();
+     }
+
+     int getMin() {
+         return stk_min.top();
+     }
+ };
+ */
+
+
+/*
+// solution 2
 class MinStack {
+private :
+	struct  Node {
+		int val, min_val;
+		Node(int val, int min_val): val(val), min_val(min_val){}
+	};
+	
+	stack<Node> stk;	
+
 public:
-    /** initialize your data structure here. */
     MinStack() {
-        
+	 
     }
     
     void push(int x) {
-        
+	if (stk.empty()) {
+		stk.push({x, x});
+	} else {
+		stk.push({x, std::min(x, stk.top().min_val)});
+	}	
     }
     
     void pop() {
-        
+	stk.pop();
     }
     
     int top() {
-        
+	return stk.top().val; 
     }
     
     int getMin() {
-        
+	return stk.top().min_val;  
     }
 };
+*/
+
+/*
+// solution 3
+class MinStack {
+private :	
+	stack<int> stk;	
+	int min_val;
+
+public:
+    MinStack() {
+	min_val = INT_MAX;
+    }
+    
+    void push(int x) {
+	if (x <= min_val) {
+		// 旧的min_val 入栈
+		stk.push(min_val);
+		min_val = x;
+	}
+	stk.push(x);
+    }
+    
+    void pop() {
+	if (stk.top() == min_val) {
+		stk.pop();
+
+		// 旧的最小值出栈并设置min_val 
+		min_val= stk.top(); 
+		stk.pop();
+	} else {
+		stk.pop();
+	}
+    }
+    
+    int top() {
+	return stk.top(); 
+    }
+    
+    int getMin() {
+	return min_val;  
+    }
+};
+*/
+
+// solution 4, 存储差值, 需要注意减法溢出的问题
+class MinStack {
+private :	
+	stack<long long> stk;	
+	long long  min_val;
+
+public:
+    MinStack() {
+	min_val = INT_MAX;
+    }
+    
+    void push(int x) {
+	if (stk.empty()) {
+		stk.push(0);
+		min_val = x;
+	} else {
+		long long diff = x - min_val;			
+		stk.push(diff);
+		if (diff < 0) {
+			// update min_val
+			min_val = x;	
+		}
+	}
+    }
+    
+    void pop() {
+	if (stk.top() < 0) {
+		min_val = min_val - stk.top(); 
+	}	
+	stk.pop();
+    }
+    
+    int top() {
+	return stk.top() >= 0 ? min_val + stk.top() : min_val; 
+    }
+    
+    int getMin() {
+	return min_val;  
+    }
+};
+
+
 
 /**
  * Your MinStack object will be instantiated and called as such:
