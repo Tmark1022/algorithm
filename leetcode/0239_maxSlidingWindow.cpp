@@ -12,33 +12,28 @@
 
 using namespace std;
 
-// 单调队列
-class MonotonicDeque {
+// 单调队列类
+class MonotonicQueue {
 public:
-	MonotonicDeque(vector<int> &nums, int k):nums(nums), k(k) {}
-
 	// 入队
-	void push(int i) {
-		while (!que.empty() && nums[que.back()] <= nums[i]) que.pop_back(); 
-		que.push_back(i);
+	void Push(int val) {
+		while (!que.empty() && que.back() < val) que.pop_back(); 
+		que.push_back(val);
 	}
 
-	// 队头出队  
-	void pop() {
-		que.pop_front();
+	// 出队  
+	void Pop(int val) {
+		if (que.front() == val) que.pop_front();
 	}
 
-	int front() {
+	int Max() {
 		return que.front();
 	}
+
 private:
 	// 采用双端队列来实现
 	deque<int> que;	
-	vector<int> &nums;
-	int k;
 };
-
-
 
 void PrintVec(const vector<int> &nums) {
 	for (auto elem : nums) {
@@ -67,26 +62,24 @@ public:
     }
     */
 
-	/*
 	// solution 2: 单调队列; 相对于暴力， 要提高效率可以从如何更快地从滑动窗口中找到最大值;
 	// 这里我们可以借助递减队列(单调队列)来快速找到最大值， 递减队列存储的是滑动窗口中可能作为下一个最大值的值下标， 队头是当前滑动窗口的最大值 
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 	vector<int> res;
 	int len = nums.size();	
-	MonotonicDeque que(nums, k);
+	MonotonicQueue que;
 
 	for(int i = 0; i < len; ++i) {
-		que.push(i);
+		que.Push(nums[i]);
 		if (i >= k-1) {
-			res.push_back(nums[que.front()]);
-			if (que.front() + k - 1 <= i) que.pop();
+			res.push_back(que.Max());
+			que.Pop(nums[i-k+1]);
 		}
-	}
-	
+	}		
 	return res;
     }
-    */
 
+	/*
 	// solution 3: dp, 将数组划分为大小k的子数组， 
 	// 分别计算left数组(所在的K大小子数组左侧到当前下标的最大值) 和 right数组(所在的K大小子数组右侧到当前下标的最大值)
 	//
@@ -117,6 +110,7 @@ public:
 
         return res;
     }
+    */
 };
 
 
