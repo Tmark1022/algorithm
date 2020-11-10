@@ -46,10 +46,28 @@ void Print(const Solution &obj) {
 	cout << obj.a << ", " << obj.b << endl;
 }
 
+
+class Aggregate {
+
+public:
+	int a;
+	int b;
+
+	void print() {
+		cout << a << ", " << b << endl;
+	}
+
+private:
+	void hello() {};
+
+};
+
+
 int main(int argc, char *argv[]) {
 
 	Print(10);
-
+	Aggregate obj {10, 20};
+	obj.print();
 
 	return 0;
 }
