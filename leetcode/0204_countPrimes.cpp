@@ -27,14 +27,16 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
+#include <vector>
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::vector;
 
 
 class Solution {
-private:
+public:
 	// 判断一个整数是否为质数
 	// 1. 遍历N个数判断
 	bool IsPrimes1(int n)
@@ -130,13 +132,38 @@ public:
 
 		return count;
 	}
+
+public: 
+	// 获取n内所有的素数
+	vector<int> GetPrimes(int n) {
+		vector<bool> is_prime(n, true);
+		vector<int> ans;
+		for (int i = 2; i < n; ++i) {
+			if (is_prime[i]) {
+				ans.push_back(i);
+
+				// 排除所有i的倍数
+				for (int j = i+i; j < n; j += i) {
+					is_prime[j] = false;
+				}	
+			}
+		}	
+
+		return ans;
+	}
 	
 };
 
-
-
 int main(int argc, char *argv[]) {
 	Solution obj;
-	cout << obj.countPrimes(0) <<endl;
+	//cout << obj.countPrimes(0) <<endl;
+	
+	int n ;
+	cout << "n is ";
+	cin >> n;
+	for (auto & elem : obj.GetPrimes(n))
+		cout << elem << ",";
+	cout << endl;
+	
 	return 0;
 }

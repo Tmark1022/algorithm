@@ -62,6 +62,29 @@ public:
     }
     */
 
+
+    /*
+	// solution 1: 解法1的代码优化版 
+	vector<vector<string>> groupAnagrams(vector<string>& strs) {
+		vector<vector<string>> ans;
+        	unordered_map<string, int> map;       // string -> ans 的下标
+        	unsigned idx = 0;
+
+        	for (auto & str : strs) {
+        	    string key = SortStr(str);
+        	    auto it = map.find(key);
+        	    if (it == map.end()) {
+        	        ans.push_back(vector<string>({str}));
+        	        map[key] = idx++;
+        	    } else {
+        	        ans[it->second].push_back(str);
+        	    }
+        	}
+        	return ans;
+	}
+	*/
+
+
     /*
 	// solution 2: 统计每一个字母的个数， 使用#连接起来作为key， 如 0#1#12#.......  
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
@@ -103,6 +126,7 @@ public:
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
 	unordered_map<long, vector<string>> map;
 	int prime[26] = {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101};
+	//               2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113
 	
 	for (string str : strs) {
 		unsigned long long key = 1;
