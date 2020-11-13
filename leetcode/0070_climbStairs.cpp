@@ -9,6 +9,7 @@
  ************************************************************************/
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -32,16 +33,36 @@ public:
     }
     */
 	
+/*
 	// solution 2: 数列通项公式 	
 	// 需要注意的是这里比 斐波那契数列提前了一项。
     int climbStairs(int n) {	
 	return (1.0 / std::sqrt(5)) * (std::pow((1 + std::sqrt(5)) / 2, n+1) - std::pow((1 - std::sqrt(5)) / 2, n+1));
+    }
+    */
+
+	//solution 3
+    int climbStairs(int n) {
+        vector<int> res(n+1, 0);
+	res[0] = 1;
+        res[1] = 1;
+        climbStairsRecur(n, res);
+        return res[n];
+    }
+
+    int climbStairsRecur(int n, vector<int> & res) {
+        if (res[n]) {
+            return res[n];
+        }
+        res[n] = climbStairsRecur(n-1, res)  + climbStairsRecur(n-2, res);
+        return res[n];
     }
 
 };
 
 
 int main(int argc, char *argv[]) {
-
+	Solution obj;
+	cout << "------------" << obj.climbStairs(100) << endl;
 	return 0;
 }
