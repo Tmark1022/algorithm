@@ -25,7 +25,6 @@ solution 4: 动态规划 【迭代】, 递推公式(不是很明白推导过程)
 solution 5: 动态规划 【递归】, 原理同上
 */
 
-
 /*
 class Solution {
 public:
@@ -165,6 +164,7 @@ public:
 };
 */
 
+/*
 // solution 4: 动态规划 【迭代】, 递推公式(不是很明白推导过程): dp[i] = (dp[a])dp[b];
 class Solution {
 public:	
@@ -195,7 +195,38 @@ public:
 	return dp[n];
     }
 };
+*/
 
+// solution 5: solution 4 递归解法
+class Solution {
+public:	
+	const vector<string>& Generate(int n, vector<vector<string>> &dp) {		
+		if (!dp[n].empty()) {
+			return dp[n];
+		}
+
+		for (int a = 0; a < n; ++a) {
+			const vector<string> &veca = Generate(a, dp);
+			const vector<string> &vecb = Generate(n-1-a, dp);
+			for (const string &stra : veca) 
+				for(const string &strb : vecb) {
+					dp[n].push_back("(" + stra + ")" + strb);
+				}
+		}
+		return dp[n];
+	}
+
+    vector<string> generateParenthesis(int n) {
+	// 异常条件
+	if (n <= 0) {
+		return {};
+	}	
+	vector<vector<string>> dp(n+1);
+	dp[0] = {""};
+	dp[1] = {"()"};
+	return Generate(n, dp);
+    }
+};
 
 int main(int argc, char *argv[]) {
 	Solution obj;
