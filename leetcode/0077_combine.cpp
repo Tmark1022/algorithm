@@ -16,6 +16,13 @@ using std::vector;
 using std::string;
 
 
+// solution 1:回溯 
+// solution 2:递归二进制枚举 + 剪枝
+// solution 3:C(n,k) = C(n-1,k-1) + C(n-1,k), 通俗解释就是是否取当前的n, 来缩小问题规模, f(n, k) = [f(n0,k-1)->push_back(n)] + f(n-1, k);  
+// solution 4:字典序法实现组合, 参考官方解法
+
+
+
 // solution 1: 递归模拟多层循环, 每一层递归就一层循环	
 class Solution {
 public:
