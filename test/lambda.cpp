@@ -5,9 +5,11 @@
  @ Description	: 
  ************************************************************************/
 #include <iostream>
+#include <iterator>
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <functional>
 
 using std::cin;
 using std::cout;
@@ -16,16 +18,46 @@ using std::vector;
 using std::string;
 
 
-int main(int argc, char *argv[]) {
-		
-	auto fun = []()->int{
-		int a = 100;
-		int b;
-		cin >> b;
-		if (b) {
-			return -1;
+void PrintVec(vector<int> &vec) {
+	for (auto &e : vec) {
+		cout << e << " ";
+	}
+	cout << endl;
+}
+
+
+bool BinaryPredicate(int a, int b) {
+	return a >= b; 
+}
+
+class Solution{
+	public:
+		Solution():a(100), b("123"){}
+
+		void foo() {
+			
+			auto ff = [this](){
+				cout << a << endl;	
+				cout << b << endl;
+				this->a = 111;
+				this->b+= "adf";
+
+			};
+
+			ff();
+			cout << "-----------" << endl;
+			cout << a << endl;	
+			cout << b << endl;
 		}
-		return a;}; 
-	cout << fun() << endl;
-	return 0;
+	
+	private:
+		int a ;
+		string b;
+
+};
+
+
+int main(int argc, char *argv[]) {
+	Solution obj;	
+	obj.foo();
 }
