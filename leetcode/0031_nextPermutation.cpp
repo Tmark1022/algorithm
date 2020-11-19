@@ -15,12 +15,23 @@ using std::endl;
 using std::vector;
 using std::string;
 
-
-
 class Solution {
 public:
     void nextPermutation(vector<int>& nums) {
+	int len = nums.size();			
+	
+	// 找到第一个小的数
+	int i = len - 2;  
+	while (i >= 0 && nums[i] >= nums[i+1]) --i;
 
+	if (i < 0) {
+		std::reverse(nums.begin(), nums.end());	
+	} else {
+		int k = len-1;	
+		while(nums[k] <= nums[i]) --k;		
+		std::swap(nums[k], nums[i]);
+		std::reverse(nums.begin() + i + 1, nums.end());	
+	}
     }
 };
 
