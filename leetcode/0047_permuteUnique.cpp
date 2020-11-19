@@ -16,6 +16,7 @@ using std::vector;
 using std::string;
 
 
+/*
 // solutin 1: 回溯 + 剪枝(剪去重复的元素), 使用辅助数组visit 
 class Solution {
 public:
@@ -47,7 +48,22 @@ public:
 	return ans;
     }
 };
+*/
 
+// solution 2: 参考leetcode 31下一个排列的启发, 使用next_permutation 轮一周即全排列(兼容重复元素)
+//		刚好stl也有next_permutation函数
+
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+	vector<vector<int>> ans;
+	std::sort(nums.begin(), nums.end());		
+	do {
+		ans.push_back(nums);	 		
+	} while(std::next_permutation(nums.begin(), nums.end()));
+	return ans;
+    }
+};
 
 int main(int argc, char *argv[]) {
 
