@@ -8,12 +8,14 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <stack>
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::vector;
 using std::string;
+using std::stack;
 
 
 
@@ -117,11 +119,59 @@ public:
 };
 */
 
-// TODO : solution 3: 在solutin 2的基础上， 使用栈来模拟递归 
+// solution 3: 在solutin 2的基础上， 使用栈来模拟递归 
+class Solution {
+public:	
+	struct Status {
+		long long col, xy_diff, xy_sum;
+		vector<int> tmp;
+		Status(long long b, long long c, long long d, vector<int> e): col(b), xy_diff(c), xy_sum(d), tmp(e) {}
+	};
 
+	vector<vector<string>> TransformMatrix(int n, const vector<vector<int>> & ans) {
+		vector<vector<string>> res;
+		for (auto &vec : ans) {
+			vector<string> matrix;  
+			for (auto &e : vec) { 
+				matrix.emplace_back(n, '.');
+				matrix.back()[e] = 'Q';
+			}
+			res.push_back(matrix);
+		}
+		return res;
+	}
 
+    vector<vector<string>> solveNQueens(int n) {
+	if (n <= 0) return {{}};			
+	vector<vector<int>> ans;
+	stack<Status> stk;
 
+	stk.push(Status(0, 0, 0, {}));
+	while (!stk.empty()) {
+		Status cur = stk.top();	
+		stk.pop();	
 
+		// terminator
+		if (cur.tmp.size() == n) {
+			ans.push_back(cur.tmp);
+			continue;
+		}
+
+		// push all child status into stack
+		long long valid_position = ((1 << n) - 1) & ~(cur.col | cur.xy_diff | cur.xy_sum); // 所有可行的位
+		while (valid_position) {
+			long long pos_val = valid_position & (-valid_position); 	
+			int pos = __builtin_ctz(pos_val);				
+				
+			stk.push(Status(cur.col|pos_val, (cur.xy_diff|pos_val) >> 1, (cur.xy_sum|pos_val) << 1, cur.tmp)); 
+			stk.top().tmp.push_back(pos);
+
+			valid_position &= valid_position - 1;
+		}
+	}	
+	return TransformMatrix(n, ans);
+    }
+};
 
 int main(int argc, char *argv[]) {
 
