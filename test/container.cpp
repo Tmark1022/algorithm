@@ -100,7 +100,11 @@ void TestMap() {
 
 
 int main(int argc, char *argv[]) {
-	TestMap();
+	//TestMap();
+	vector<int> aa;	
+	cout << aa.size() - 1 << endl;
+	for (int i = 0; i < aa.size() - 1; ++i)			// 坑
+		cout << i << endl;
 
 	return 0;
 }
