@@ -4,7 +4,9 @@
  @ File Name	: cpp_constructor.cpp
  @ Description	: 
  ************************************************************************/
+#include <initializer_list>
 #include <iostream>
+#include <algorithm>
 
 using std::cin;
 using std::cout;
@@ -23,6 +25,11 @@ public:
 	}; 
 	Type(const Type &obj):a(obj.a), b(obj.b) {
 		cout << "copy constructor" << endl;
+	}
+
+	Type(std::initializer_list<int> ini) {
+		cout << "Type(std::initializer_list<int> ini)" << endl;;
+		std::for_each(ini.begin(), ini.end(), [](int a){cout<<a<< endl;});
 	}
 
 
@@ -44,9 +51,8 @@ void foo(const Type &obj)
 
 
 int main(int argc, char *argv[]) {
-	foo(123);	
-	Type obj = {1};
-	obj.Print();
+	Type(10);
+	Type aa = Type({1,6,5,43});
 		
 	return 0;
 }
