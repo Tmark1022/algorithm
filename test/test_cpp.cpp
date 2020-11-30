@@ -8,25 +8,18 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <initializer_list>
 
-using std::cin;
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
+using namespace std;
+
+
+void foo(initializer_list<int> il) {
+
+	for_each(il.begin(), il.end(), [](int a){cout << a << endl;});	
+}
 
 int main(int argc, char *argv[]) {
-	vector<string> v1;
-	vector<string> v2 = {"hello world", "adsf", "asdf"};
-	v1 = v2;	
-	v1[0].push_back('0');
-	cout << "v1 --------------" << endl;
-	std::for_each(v1.begin(), v1.end(), [](const string &tmp){cout << tmp << endl;});  
-	cout << "v2 --------------" << endl;
-	std::for_each(v2.begin(), v2.end(), [](const string &tmp){cout << tmp << endl;});  
-
-
-
+	foo({1,3});
 
 	return 0;
 }
