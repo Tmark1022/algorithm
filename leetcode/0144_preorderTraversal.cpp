@@ -69,6 +69,30 @@ public:
 	return ans;
     }
 };
+
+
+// solutin 2: 使用栈实现
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        stack<TreeNode *> stk;
+        vector<int> ans;
+
+        while (root || !stk.empty()) {
+            if (root) {
+                ans.push_back(root->val);
+                stk.push(root);
+                root = root->left;
+            } else {
+                root = stk.top(); 
+                stk.pop();
+                root = root->right;
+            } 
+        } 
+        return ans;
+    }
+};
+
 */
 
 // solution 3: 迭代，morris遍历 

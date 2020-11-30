@@ -78,6 +78,31 @@ public:
 	return ans; 
     }
 };
+
+
+
+// solution 2: 使用栈
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> ans;    
+        stack<TreeNode*> stk; 
+
+        while (root || !stk.empty()) {
+            if (root) {
+                ans.push_back(root->val);
+                stk.push(root);
+                root = root->right; 
+            }  else {
+                root = stk.top();
+                stk.pop();
+                root = root->left;
+            } 
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
 */
 
 

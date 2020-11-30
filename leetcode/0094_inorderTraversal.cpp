@@ -86,7 +86,7 @@ public:
 };
 */
 
-/*
+
 // solution 3: 迭代， 使用栈 
 class Solution {
 public:
@@ -95,25 +95,21 @@ public:
         stack<TreeNode *> stk;	// 保留的是等待回来访问的父亲节点
 
 	while (root || !stk.empty()) {		
-		// 左
-		while (root) {
-			stk.push(root);
+		if (root) {
+			stk.push(root);					
 			root = root->left;
-		}	
-
-		// 访问父节点
-		root = stk.top();	
-		stk.pop();
-		ans.push_back(root->val);
-
-		// 右
-		root = root->right;
+		} else {
+			root = stk.top();	
+			stk.pop();
+			ans.push_back(root->val);	
+			root = root->right;
+		}
 	}	
 	return ans;
     }
 };
-*/
 
+/*
 // solution 4: morris 中序遍历, 对于solution 3，使用栈作为辅助数组进行往回追溯
 //		而morris 将当前节点赋值为前驱节点的右孩子， 进行往回追溯
 class Solution {
@@ -145,10 +141,7 @@ public:
 	return ans;
     }
 };
-
-
-
-
+*/
 
 int main(int argc, char *argv[]) {
 
