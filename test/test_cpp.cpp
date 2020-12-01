@@ -18,8 +18,17 @@ void foo(initializer_list<int> il) {
 	for_each(il.begin(), il.end(), [](int a){cout << a << endl;});	
 }
 
-int main(int argc, char *argv[]) {
-	foo({1,3});
+void Test() {
+	string * ptr = new string[10]();
 
+	for (int i = 0; i < 10; ++i) {
+		cout << i << ":" << ptr[i] << endl;
+	}	
+
+
+}
+
+int main(int argc, char *argv[]) {
+	Test();
 	return 0;
 }
