@@ -4,7 +4,9 @@
  @ File Name	: test_cpp.cpp
  @ Description	: 
  ************************************************************************/
+#include <ios>
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -19,11 +21,26 @@ void foo(initializer_list<int> il) {
 }
 
 void Test() {
-	string * ptr = new string[10]();
+	string a = "123 34 56 ";
+	istringstream ss(a); 
+	string tmp;	
+	while (ss>>tmp) {
+		cout << tmp << endl;
+	}
 
-	for (int i = 0; i < 10; ++i) {
-		cout << i << ":" << ptr[i] << endl;
-	}	
+	cout << "----------------------" << endl;
+	string lala = "yiu,11111111111111111111111111111111111111111";
+	ostringstream os(lala, ios_base::ate);
+	cout << os.str() << endl;
+	os << "hello" << " ";
+	os << "tmark" << " "; 
+	os << "|";
+	cout << os.str() << endl;
+	
+	os.str("123 | 333333333333333333333333");
+	cout << os.str() << endl;
+	os << "asdfsadf";
+	cout << os.str() << endl;
 
 
 }
