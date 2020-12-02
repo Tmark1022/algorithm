@@ -21,12 +21,19 @@ void foo(initializer_list<int> il) {
 }
 
 void Test() {
-	string a = "123 34 56 ";
+	string a = "9,3,4,#,#,1,#,#,2,#,6,#,#";
 	istringstream ss(a); 
 	string tmp;	
-	while (ss>>tmp) {
+	while (true) {
+		cout << "&&&&" <<  ss.eof()  << "---" << ss.fail() << endl;
+		if (!getline(ss, tmp, ',')) {
+			cout << "-----" << ss.eof()  << "---" << ss.fail() << endl;
+			break;
+		}
 		cout << tmp << endl;
 	}
+	if (ss) cout << "not end, 000000000000000000" << endl;
+	else cout << "end 11111111111111111" << endl;
 
 	cout << "----------------------" << endl;
 	string lala = "yiu,11111111111111111111111111111111111111111";
@@ -41,7 +48,6 @@ void Test() {
 	cout << os.str() << endl;
 	os << "asdfsadf";
 	cout << os.str() << endl;
-
 
 }
 
