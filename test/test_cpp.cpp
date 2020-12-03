@@ -11,6 +11,7 @@
 #include <string>
 #include <algorithm>
 #include <initializer_list>
+#include <cstdio>
 
 using namespace std;
 
@@ -51,7 +52,15 @@ void Test() {
 
 }
 
+void TestBit() {
+	int i = 1;	
+	while (i) {
+		printf("%08x\n", i);	
+		i <<= 1;
+	}
+}
+
 int main(int argc, char *argv[]) {
-	Test();
+	TestBit();
 	return 0;
 }
