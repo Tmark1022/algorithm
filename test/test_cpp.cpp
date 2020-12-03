@@ -60,7 +60,25 @@ void TestBit() {
 	}
 }
 
+class A{
+public:	
+	A() = default;
+	~A() = delete;
+	A(const A &) = delete;
+	void foo(int a, int b);
+	void foo(int a, double b) {
+		cout << "void foo(int a, double b)" << endl;
+	}
+	void oper() {
+		foo(10,20);
+	}
+};
+
+void A::foo(int a, int b){
+	cout << "void foo(int a, int b)" << endl;
+}	
+
 int main(int argc, char *argv[]) {
-	TestBit();
+	A *a = new A();
 	return 0;
 }
