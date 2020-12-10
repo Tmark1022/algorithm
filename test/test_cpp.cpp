@@ -7,6 +7,7 @@
 #include <ios>
 #include <iostream>
 #include <sstream>
+#include <utility>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -63,8 +64,9 @@ void TestBit() {
 class A{
 public:	
 	A() = default;
-	~A() = delete;
-	A(const A &) = delete;
+	~A();
+	A(int a){}
+	A(const A &);
 	void foo(int a, int b);
 	void foo(int a, double b) {
 		cout << "void foo(int a, double b)" << endl;
@@ -77,6 +79,14 @@ public:
 void A::foo(int a, int b){
 	cout << "void foo(int a, int b)" << endl;
 }	
+
+
+void TestRightValReference() {
+	int b = 10;
+	int && a = std::move(b);
+
+
+}
 
 int main(int argc, char *argv[]) {
 	A *a = new A();
