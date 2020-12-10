@@ -167,7 +167,6 @@ public:
 	}
     }
 };
-*/
 
 // solution 3: 双向BFS + DFS
 class Solution {
@@ -246,7 +245,75 @@ public:
 	}
     }
 };
+*/
 
+
+// solution 4: 单纯BFS
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+	int num = 0;	
+	unordered_map<string, int> map;	
+	for (auto &word : wordList) map[word] = num++;  
+	if (!map.count(endWord)) return {};
+	if (!map.count(beginWord)) map[beginWord] = num++, wordList.push_back(beginWord);
+
+	int bid = map[beginWord], eid = map[endWord];
+	deque<vector<int>> que;
+	que.push_back({bid});
+	vector<bool> visit(num, false);
+	visit[bid] = true;
+	vector<vector<int>> ans_id;	
+	
+	bool found = false;
+	while (que.size()) {
+		vector<bool> sub_visit = visit;
+		for (int cnt = que.size(); cnt; --cnt) {
+			vector<int> cur = que.front();
+			que.pop_front();
+	
+			for (auto &adj : GetAdjacentVertex(wordList[cur.back()], map)) {
+				if (visit[adj]) continue; 
+				sub_visit[adj] = true;
+				que.push_back(cur);
+				que.back().push_back(adj);
+				if (adj == eid) {
+					found = true;
+					ans_id.push_back(que.back());
+				}
+			}
+		}	
+		if (found) break;
+		visit = sub_visit;
+	}
+
+	// id -> string
+	vector<vector<string>> ans;	
+	for (auto &vec : ans_id) {
+		vector<string> tmp;
+		for (auto &id : vec) {
+			tmp.push_back(wordList[id]);
+		}
+		ans.push_back(tmp);
+	}
+	return ans;
+    }
+
+
+    vector<int> GetAdjacentVertex(string &word, unordered_map<string, int>& map) {
+	vector<int> ret;
+	for (auto &ch : word) {
+		char tmp = ch;
+		for (char i = 'a'; i <= 'z'; ++i) {
+			ch = i;
+			if (!map.count(word)) continue;
+			ret.push_back(map[word]);
+		}
+		ch = tmp;
+	}
+	return ret; 
+    }
+};
 
 
 
