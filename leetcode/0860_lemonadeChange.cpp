@@ -39,7 +39,7 @@ public:
 };
 */
 
-// solution 1: 因为存在的变化很少， 所以可以写得固定精简一些
+// solution 1: 因为存在的变化很少， 所以可以写得固定精简一些, hardcode
 class Solution {
 public:
     bool lemonadeChange(vector<int>& bills) {
