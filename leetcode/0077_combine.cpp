@@ -192,7 +192,6 @@ public:
 */
 
 
-
 // solution 4: 字典序
 class Solution {
 public:
@@ -220,6 +219,7 @@ public:
 	return ans;
     }
 };
+
 
 
 int main(int argc, char *argv[]) {
