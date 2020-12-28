@@ -66,23 +66,21 @@ private:
 	int c;
 };
 
+class CCC {
+
+};
+
+void Func(Base ha) {
+	cout << "FUNC" << endl; 
+}
+
+
 int Base::sta = 100;
 int main(int argc, char *argv[]) {
 	Base ba;	
 	Derived der;
 	Derived2 der2;
-	ba.vfunc();	
-	der.vfunc();
-	der2.vfunc();
 
-	Derived &r = der2;
-	r.vfunc();
-
-	cout << der.sta << endl;
-	cout << der2.sta << endl;
-	der.sta = 89;
-	cout << der.sta << endl;
-	cout << der2.sta << endl;
 
 	return 0;
 }

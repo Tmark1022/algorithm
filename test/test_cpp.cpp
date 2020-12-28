@@ -89,6 +89,8 @@ void TestRightValReference() {
 }
 
 int main(int argc, char *argv[]) {
-	A *a = new A();
+	int arr[3][4];
+	int (*p)[4] = arr;
+	cout << sizeof(arr) << "--" << sizeof(p) << "--" << sizeof(*p) << endl; 
 	return 0;
 }
