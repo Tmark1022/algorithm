@@ -88,9 +88,27 @@ void TestRightValReference() {
 
 }
 
+void Print2dMatrix(vector<vector<int>> vec)
+{
+	cout << "****************" << endl;
+	for (auto &e : vec) {
+		for (auto &e1 : e) {
+			cout << e1 << " ";	
+		}
+		cout << endl; 
+	}
+}
+
 int main(int argc, char *argv[]) {
-	int arr[3][4];
-	int (*p)[4] = arr;
-	cout << sizeof(arr) << "--" << sizeof(p) << "--" << sizeof(*p) << endl; 
+	vector<vector<int>> vec = {{1,2,3}, {4,5,6,7}, {8,9,10,11,12}};
+	Print2dMatrix(vec);
+	vector<vector<int>> dp(vec);	
+	Print2dMatrix(dp);
+	
+	cout << "-----------"	<< endl;
+	dp[0][0] = 123;
+	Print2dMatrix(vec);
+	Print2dMatrix(dp);
+	
 	return 0;
 }
