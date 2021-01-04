@@ -20,11 +20,12 @@ class Base{
 public:
 	Base() = default;
 	
-	void vfunc() {
-		cout << "base vfunc" << endl;
+	virtual void vfunc(int arg = 11111) {
+		cout << "base vfunc" << arg << endl;
 	}
 
 	static int sta;
+	int haha = 99;
 protected:
 	int share;
 private:
@@ -36,8 +37,8 @@ class Derived: public Base{
 public:
 	Derived():Base(){}
 
-	virtual void vfunc(){
-		cout << "derived vfunc" << endl;
+	virtual void vfunc(int arg = 2222222){
+		cout << "derived vfunc" << arg << endl;
 	}
 
 protected:
@@ -53,8 +54,8 @@ class Derived2: public Derived{
 public:
 	Derived2():Derived(){}
 
-	void vfunc(){
-		cout << "derived222 vfunc" << endl;
+	void vfunc(int arg = 333333){
+		cout << "derived222 vfunc" << arg <<  endl;
 	}
 
 protected:
@@ -66,14 +67,10 @@ private:
 	int c;
 };
 
-class CCC {
-
-};
-
-void Func(Base ha) {
-	cout << "FUNC" << endl; 
+void Func(Base *ha) {
+	ha->haha = 7788;
+	cout << "func" << ha->haha << endl;
 }
-
 
 int Base::sta = 100;
 int main(int argc, char *argv[]) {
@@ -81,6 +78,12 @@ int main(int argc, char *argv[]) {
 	Derived der;
 	Derived2 der2;
 
+	Base &r1 = der2;
+	r1.vfunc();
+
+	Derived &r2 = der2;
+	r2.vfunc();
+	
 
 	return 0;
 }
