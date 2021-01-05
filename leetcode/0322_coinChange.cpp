@@ -16,7 +16,8 @@
 using namespace std;
 
 /*
-// solution 1: 回溯搜索所有可能的组合， 时间复杂度为O(s^n), 其中s是coins.size(), 进行排列
+// solution 1: 回溯搜索， 时间复杂度为O(s^n), 其中s是coins.size(), 进行排列
+//		这种写法其实是进行排列枚举， 而不组合枚举, 而solution 4 进行的就是组合
 class Solution {
 public:
 	int ans = INT_MAX;
@@ -114,13 +115,13 @@ public:
 //    }
 //};
 //
+//
 // solution 4: 贪心 + dfs ; solution1 是排列， 这里是组合, 每个面值的硬币应该选择多少个
 //		每次选取尽可能多数量的最大面值硬币， 求出次最优解（进行不断剪枝）
 		时间复杂度为 O ((amount / coins[0]) * (amout / coins[1]) * (amount / coins[2]) * ....)
 		即 O(amount ^ s), s 为 coins.size()
 
 		不过因为经过贪心算法， 尽快地找到了一个step来进行剪枝， 所以效率却是很快
-
 //class Solution {
 //public:	
 //	int ans = INT_MAX;
@@ -209,10 +210,52 @@ public:
         return -1;
     }
 };
+
+// solution 6: solution 5的优化， 因为知道起点和终点， 所以可以进行双向BFS 
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if (amount == 0) return 0;
+        // sort(coins.rbegin(), coins.rend());             // 排序其实用处也不大
+	vector<bool> visit(amount+1, false);	
+	visit[0] = true, visit[amount] = true;
+	unordered_set<int> set1 = {amount}, set2 = {0}, *head = &set1, *tail = &set2; 
+
+        int step = 0;
+	bool direction = false;
+        while (head->size() && tail->size()) {
+                ++step;
+		if (head->size() > tail->size()) {
+			swap(head, tail);	
+			direction = !direction;
+		}
+		unordered_set<int> new_set;
+		for (auto &cur : *head) {
+                        for (auto &e : coins) {
+				int next = direction ? cur+e : cur-e;	
+				if (tail->count(next)) return step;	
+				if (next >= 0 && next <= amount && !visit[next]) {
+					visit[next] = true;
+					new_set.insert(next);
+				}
+			}
+		}
+		*head = new_set;
+        }
+        return -1;
+    }
+};
 */
 
 
-// solution 6: 完全背包问题 TODO
+
+
+
+
+
+
+
+// solution 7: 完全背包问题 TODO
 
 int main(int argc, char *argv[]) {
 
