@@ -15,15 +15,22 @@
 
 using namespace std;
 
+int lala() {
+	cout << "lalal" << endl;
+	return 8989;
+}
 
 class Base{
 public:
-	Base() = default;
+	Base() {
+		cout << "base default constructor" << endl;	
+	}
 	
 	virtual void vfunc(int arg = 11111) {
 		cout << "base vfunc" << arg << endl;
 	}
 
+		
 	static int sta;
 	int haha = 99;
 protected:
@@ -37,9 +44,14 @@ class Derived: public Base{
 public:
 	Derived():Base(){}
 
+	/*
 	virtual void vfunc(int arg = 2222222){
 		cout << "derived vfunc" << arg << endl;
 	}
+	*/
+
+	void vfunc(int arg ) = 0;
+
 
 protected:
 	void foo() {
@@ -54,9 +66,10 @@ class Derived2: public Derived{
 public:
 	Derived2():Derived(){}
 
-	void vfunc(int arg = 333333){
+	void vfunc(int arg = 333333) {
 		cout << "derived222 vfunc" << arg <<  endl;
 	}
+
 
 protected:
 	void foo() {
@@ -67,23 +80,27 @@ private:
 	int c;
 };
 
+class CC:public Base {
+public:
+	CC():Base(), cc(lala()){};
+	int cc;
+};
+
+
 void Func(Base *ha) {
 	ha->haha = 7788;
 	cout << "func" << ha->haha << endl;
 }
 
+
 int Base::sta = 100;
 int main(int argc, char *argv[]) {
 	Base ba;	
-	Derived der;
+	//Derived der;
 	Derived2 der2;
 
-	Base &r1 = der2;
-	r1.vfunc();
-
-	Derived &r2 = der2;
-	r2.vfunc();
-	
+	Base &r = der2;
+	r.vfunc();
 
 	return 0;
 }
