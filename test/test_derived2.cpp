@@ -15,6 +15,10 @@
 
 using namespace std;
 
+
+
+
+
 class Derived;
 class Base {
 	friend void func222(Derived &obj);
@@ -25,7 +29,7 @@ class Base {
 			cout << obj.c << endl;		
 		}
 
-		void fun2(Derived &obj);
+		void fun2(Derived &obj) ;
 
 	protected:
 		int b;
@@ -33,8 +37,9 @@ class Base {
 		int c;
 };
 
-class Derived : protected Base {	
+class Derived : public Base {	
 	friend void tmark1(Derived &b) ;
+	friend class FF;
 	public:
 		Derived(int a, int b, int c):Base(a, b,c) {
 			this->a = 1555;
@@ -45,11 +50,31 @@ class Derived : protected Base {
 		}
 
 		int aa;	
+
+		using Base::a;
+		using Base::b;
 	protected:
 		int bb;
 	private:
 		int cc;
 };
+
+class FF {
+	public: 
+		void abs(Derived &obj) {
+			obj.bb = 123;
+			cout << obj.bb << endl;	
+		}
+};
+
+class BB:public FF{
+	public: 
+		void dddd(Derived &obj) {
+			abs(obj);
+		}	
+};
+
+
 
 
 void tmark(Base &a, Derived &b) {
@@ -71,6 +96,12 @@ int main(int argc, char *argv[]) {
 	Derived der(123, 456, 789);
 	// obj1.func(obj2);				
 	// obj1.func(der);				
+	
+	BB obj;
+	obj.dddd(der);
+
+
+
 	
 
 	return 0;
