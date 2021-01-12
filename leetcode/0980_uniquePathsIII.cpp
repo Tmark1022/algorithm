@@ -129,42 +129,41 @@ public:
 // solution 3: dp, 使用unordered_map来表示solution 2中dp的最后一维 ,  20ms
 class Solution {
 public:
-        vector<vector<int>> xy_diff = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        bool IsValidCoordinate(vector<vector<int>>& grid, int x, int y) {
-                return x >= 0 && x < grid.size() && y >= 0 && y < grid[0].size();
-        }
-        int CalBitCode(vector<vector<int>> &grid, int x, int y) {
-                int n = grid[0].size();
-                return 1 << (x * n + y);
-        }
-
-    int uniquePathsIII(vector<vector<int>>& grid) {
-            int m = grid.size(), n = grid[0].size(), sx = -1, sy = -1, tx = -1, ty = -1, set = 0;
-            for (int i = 0; i < m; ++i) {
-                    for (int j = 0; j < n; ++j) {
-                        if (-1 == grid[i][j]) continue;
-                        set |= CalBitCode(grid, i, j);
-                        if (1 == grid[i][j]) sx = i, sy = j;
-                        else if (2 == grid[i][j]) tx = i, ty = j;
-                    }
-            }
-
-            // 初始化dp结构/
-            vector<vector<unordered_map<int, int>>> dp(m, vector<unordered_map<int, int>>(n));
-            return Recurse(grid, tx, ty, set, dp);
+    vector<vector<int>> xy_diff = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    bool IsValidCoordinate(vector<vector<int>>& grid, int x, int y) {
+        return x >= 0 && x < grid.size() && y >= 0 && y < grid[0].size();
     }
 
-         int Recurse(vector<vector<int>> &grid, int x, int y, int set, vector<vector<unordered_map<int, int>>> &dp) { 
-             if (!IsValidCoordinate(grid, x, y) || -1 == grid[x][y] || !(set & CalBitCode(grid, x, y))) return 0;
-             int offset = CalBitCode(grid, x, y);
-	     // 起点
-	     if (1 == grid[x][y]) return set == offset ? 1 : 0; 
-	     // dp缓存
-             if (dp[x][y].count(set)) return dp[x][y][set];
-             dp[x][y][set] = 0;
-             for (auto &diff : xy_diff) dp[x][y][set] += Recurse(grid, x+diff[0], y+diff[1], set^offset, dp);
-             return dp[x][y][set];
-     }
+    int CalBitCode(vector<vector<int>> &grid, int x, int y) {
+        int n = grid[0].size();
+        return 1 << (x *n + y);
+    }
+
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int tx = -1, ty = -1, m = grid.size(), n = grid[0].size(), set = 0;
+        for (int i = 0; i < m; ++i){
+            for (int j = 0; j < n; ++j) {
+                if (-1 == grid[i][j]) continue;
+                set |= CalBitCode(grid, i, j);
+                if (grid[i][j] == 2) tx = i, ty = j;
+            }
+        }
+        vector<vector<unordered_map<int, int>>> dp(m, vector<unordered_map<int, int>>(n));
+        return Recurse(grid, tx, ty, set, dp);
+    }
+
+    int Recurse(vector<vector<int>> &grid, int x, int y, int set, vector<vector<unordered_map<int, int>>> &dp) {
+        if (!IsValidCoordinate(grid, x, y) || -1 == grid[x][y] || !(set & CalBitCode(grid, x, y))) return 0;
+        int offset = CalBitCode(grid, x, y);
+	// 起点
+        if (grid[x][y] == 1) return set == offset ? 1 : 0;
+	// 缓存
+        if (dp[x][y].count(set)) return dp[x][y][set];
+        int cnt = 0;
+        for (auto &diff : xy_diff) cnt += Recurse(grid, x+diff[0], y+diff[1], set^offset, dp);
+        dp[x][y][set] = cnt;
+        return dp[x][y][set];
+    }
 };
 
 
