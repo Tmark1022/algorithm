@@ -24,7 +24,7 @@ using namespace std;
 
 	solution 2: 优雅回溯搜索(使用二分查找或unordered_map来判断下一跳是否存在); 时间O(3^N), 空间O(1) or O(N)考虑递归深度
 
-	solution 3: 优雅回溯搜索 + 记忆化递归进行剪枝; 使用N*N的二维数组visit 来保存搜索记录，如visit[idx][k] 代表上一跳距离为k的第idx块石头是否可达。
+	solution 3: 优雅回溯搜索 + 记忆化递归进行剪枝; 使用N*N的二维数组visit 来保存搜索记录，如visit[idx][k] 代表上一跳距离为k的第idx块石头是否计算访问过了。
 			使用了记忆化递归后的递归总次数为N*N（即	N个石头 * 最大跳距离为N）
 			当使用unordered_map来判断下一跳是否存在时， 总的时间复杂度为O(N*N), 空间复杂度为O(N*N)
 	
