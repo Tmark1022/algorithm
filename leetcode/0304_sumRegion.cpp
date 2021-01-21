@@ -22,14 +22,14 @@ using namespace std;
 			确定起点(row1, col1)和终点 (row2, col2) 需要时间复杂度O(MN * MN), 计算(row1, col1), (row2, col2)的区域和方法有:
 				1) 朴素的计算方法 : 遍历计算区域和 O(MN), 那么单纯构造四维缓存数组的时间复杂度为O(MN * MN * MN)
 				2) 动态规划方法: dp[row1][col1][row2][col2] = \
-					dp[row1][col1][row2][col2-1] + dp[row1][col1][row2-1][col2] + dp[row1][col1][row2-1][col2-1] + matrix[row2][col2]
+					dp[row1][col1][row2][col2-1] + dp[row1][col1][row2-1][col2] - dp[row1][col1][row2-1][col2-1] + matrix[row2][col2]
 					那么单纯构造四维缓存数组的时间复杂度为O(MN * MN)
 			故 创建对象最佳O(MN*MN), 查询O(1), 空间(MN*MN)
 	
 	solution 3: 行缓存, 参考 leetcode 303, 创建M 个 大小为N的一维前缀和数组; 创建对象O(MN), 查询O(M), 空间O(MN)
 
 	solution 4: 缓存, 利用二维前缀和数组， 计算前缀和使用dp方法; 参考上面 (row1, col1), (row2, col2)的区域和为 dp[row1][col1][row2][col2] = \
-					dp[row1][col1][row2][col2-1] + dp[row1][col1][row2-1][col2] + dp[row1][col1][row2-1][col2-1] + matrix[row2][col2]
+					dp[row1][col1][row2][col2-1] + dp[row1][col1][row2-1][col2] - dp[row1][col1][row2-1][col2-1] + matrix[row2][col2]
 
 				我们现在固定起点就是(0, 0), dp[i][j] 表示 (0,0), (i,j) 的区域和, 存在如下状态转移方程:
 					dp[i][j] = dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1] + matrix[i][j]
