@@ -104,19 +104,21 @@ public:
     int countSubstrings(string s) {
 	    // step 1: 插入占位符， 构造新的字符串
 	    string str = "?#";
-	    for (auto &e : s) str = str + e + "#";
+	    for (auto &e : s) {
+		// str = str + e + "#";		// 注意区分 =  和 += 这种写法很慢， N^2时间复杂度
+		str += e;
+		str += "#";
+	    }
 	    str += "!";
 
 	    int ans = 0, len = str.size(), rm = 0, im = 0;
 	    vector<int> dp(len, 0);
 	    for (int i = 1; i < len - 1; ++i) {
 		// step 2: 初始化dp[i]
-		if (i >= rm) dp[i] = 1; 				
-		else dp[i] = min(dp[im-(i-im)], rm - i + 1);
-
+		dp[i] = i >= rm ? 1 : min(dp[2*im-i], rm - i + 1); 
 		// step 3: 拓展dp[i]
-		for (int l = i-dp[i], r = i+dp[i]; str[l] == str[r]; --l, ++r) ++dp[i];			
-
+		while (str[i-dp[i]] == str[i+dp[i]]) ++dp[i];
+		if (i + dp[i] - 1 > rm) rm = i + dp[i] - 1, im = i;	
 		// 统计回文子串数量
 		ans += dp[i] / 2;
 	    }
