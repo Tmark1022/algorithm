@@ -22,6 +22,20 @@ struct TrieNode {
 	bool isLeaf;
 };  
 
+
+/*
+// 另一种经常使用的结构如下， 增加pass field, 表示trie中有多少个单词路径经过该节点， 删除一个word时， pass--, 当pass减为0就可以调用下面的FreeTrie函数释放对应节点了
+
+#define ALPHABET_SIZE 26			// 假设输入字符串为小写字母
+struct TrieNode {
+	TrieNode():children(ALPHABET_SIZE, nullptr), isLeaf(false) {}		
+	vector<TrieNode *> children; 
+	bool isLeaf;
+	int pass;			// 表示还有多少个单词的路径进过该节点， 0表示已经没有单词路径经过该节点， 可以释放掉。
+};  
+*/
+
+
 // root : root node of the trie
 // key : string to be inserted into the trie
 // If not present, inserts key into trie
