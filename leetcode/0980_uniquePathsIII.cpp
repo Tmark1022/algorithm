@@ -27,7 +27,7 @@ using namespace std;
 			存在如下状态转移方程:
 				f(i, j, set) = f(i-1, j, set-<i,j>) + f(i+1, j, set-<i,j>) + f(i, j-1, set-<i,j>) + f(i, j+1, set-<i,j>)
 
-				其中 set - <i,j> 表示 点集set中排除<i,j>左边点
+				其中 set - <i,j> 表示 点集set中排除<i,j>坐标点
 
 			base case:
 				1) 非法坐标<i, j> 或 grid[i][j] == -1  ==> f(i, j, set) = 0	
