@@ -10,7 +10,16 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+
+void func1() {
+	int a = -1;
+	cout << sizeof(a) << "," << static_cast<unsigned int>(a) << "," << bitset << endl;
+}
+
 int main(int argc, char *argv[]) {
+	func1();
+	return 0;
+
 	int a = 100;
 	int *ptr_int = &a;
 	double b = 123.456;
@@ -47,3 +56,4 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
+
