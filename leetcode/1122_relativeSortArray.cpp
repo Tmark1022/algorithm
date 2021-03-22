@@ -32,6 +32,7 @@ using namespace std;
 				归并排序	merge sort
 				堆排序(优先队列排序)	heap sort
 				
+				// 后三种为非比较性排序， 故并不适合该解法中(该解法需要自定义collation)
 				计数排序		counting sort		
 				桶排序			bucket sort
 				基数排序		radix sort
@@ -197,6 +198,7 @@ public:
 			que.pop();
 		}	
 	}
+
 
 };
 
