@@ -4,6 +4,7 @@
  @ File Name	: 1122_relativeSortArray.cpp
  @ Description	: 1122. 数组的相对排序
  ************************************************************************/
+#include <cstdlib>
 #include <iostream>
 #include <type_traits>
 #include <vector>
@@ -14,6 +15,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <functional>
+#include <queue>
 
 using namespace std;
 
@@ -115,6 +117,85 @@ public:
 	void ShellSort(vector<int> &arr, function<bool(int, int)> cmp) {
 		vector<int> distance = {5, 3, 1};
 		for (auto &d : distance) ShellSortHelp(arr, cmp, d); 
+	}
+
+	// 快速排序 O(nlogn) 非稳定		
+	void QuickSort(vector<int> &arr, function<bool(int, int)> cmp) {		
+		if (arr.size() <= 1) return ;	
+		QuickSortCore(arr, 0, arr.size() -1, cmp);
+	}			
+	
+	void QuickSortCore(vector<int> &arr, int low, int high, function<bool(int, int)> cmp) {
+		if (low >= high) {
+			return ;
+		}
+		
+		int mid = Partition(arr, low, high, cmp);  
+		QuickSortCore(arr, low, mid-1, cmp);			
+		QuickSortCore(arr, mid+1, high, cmp);				
+	}	
+
+	int Partition(vector<int> &arr, int low, int high, function<bool(int, int)> cmp) {
+		// 选取随意元素作为pivot
+		int ridx = rand() % (high - low + 1) + low;				
+		swap(arr[ridx], arr[low]);	
+
+		int pivot = low;  
+		for (int i = low + 1; i <= high; ++i) {
+			if (cmp(arr[i], arr[low])) swap(arr[i], arr[++pivot]);	
+		}		
+		swap(arr[low], arr[pivot]);
+		return pivot;
+	}
+
+	// 归并排序 O(nlogn) 稳定
+	void MergeSort(vector<int> &arr, function<bool(int, int)> cmp) {					
+		if (arr.size() <= 1) return ;
+		vector<int> cache(arr.size(), 0);
+		MergeSortCore(arr, cache, cmp, 0, arr.size() - 1);		
+	}
+
+	void MergeSortCore(vector<int> &arr, vector<int> &cache, function<bool(int, int)> cmp, int low, int high) {
+		// terminator
+		if (low >= high) return ;
+
+		// sub problem
+		int mid = low + ((high - low) >> 1);
+		MergeSortCore(arr, cache, cmp, low, mid);	
+		MergeSortCore(arr, cache, cmp, mid+1, high);	
+		
+		// merge
+		Merge(arr, cache, cmp, low, mid, high);
+	}
+	
+	void Merge(vector<int> &arr, vector<int> &cache, function<bool(int, int)> cmp, int low, int mid, int high) {
+		int i = low, j = mid + 1, idx = low;					
+		while (i <= mid || j <= high) {
+			cache[idx++] = (i <= mid && (j > high || cmp(arr[i], arr[j]))) ? arr[i++] : arr[j++];
+		}
+
+		std::copy(cache.begin() + low, cache.begin() + high + 1, arr.begin() + low);	
+	}	
+
+	// 堆排序 O(nlogn) 非稳定 
+	class Compare {
+		public:
+			Compare(function<bool(int, int)> cmp):cmp(cmp) {}
+			bool operator()(int a, int b) const {
+				return !cmp(a, b);
+			}
+		private :
+			function<bool(int, int)> cmp;
+
+	};	
+	void HeapSort(vector<int> &arr, function<bool(int, int)> cmp) {					
+		// 堆排序需要实现一个堆， 这里仅仅使用priority_queue 当做堆数据结构，来实现堆排序过程  	
+		priority_queue<int, vector<int>, Compare> que(arr.begin(), arr.end(), Compare(cmp));			
+		int idx = 0;
+		while (que.size()) {
+			arr[idx++] = que.top();
+			que.pop();
+		}	
 	}
 
 };
