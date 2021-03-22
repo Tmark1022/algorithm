@@ -41,7 +41,6 @@ using namespace std;
 
    */
 
-/*
 //solution 1: 
 class Solution {
 public:
@@ -73,9 +72,54 @@ public:
 			}		
 		}		
 	}
-};
-*/
 
+	// 选择排序 O(N^2) 非稳定
+	void SelectionSort(vector<int> &arr, function<bool(int, int)> cmp) {
+		int n = arr.size(), min_idx;		
+		for (int i = 0; i < n-1; ++i) {
+			min_idx = i; 
+			for (int j = i + 1; j < n; ++j) {
+				if (!cmp(arr[min_idx], arr[j])) min_idx = j;
+			}
+
+			if (i != min_idx) swap(arr[i], arr[min_idx]); 
+		}
+	}
+
+	// 插入排序 O(N^2) 稳定
+	void InsertionSort(vector<int> &arr, function<bool(int, int)> cmp) {
+		int n = arr.size();		
+		for (int i = 0; i < n-1; ++i) {
+			int j = i, tmp = arr[j+1];
+			while (j >= 0 && !cmp(arr[j], tmp)) {
+				arr[j+1] = arr[j];
+				--j;
+			}
+			arr[j+1] = tmp;	
+		}
+	}
+
+	// 希尔排序 O(N^2) 非稳定
+	void ShellSortHelp(vector<int> &arr, function<bool(int, int)> cmp, int d) {
+		int n = arr.size();		
+		for (int i = 0; i < n-d; ++i) {
+			int j = i, tmp = arr[j+d];
+			while (j >= 0 && !cmp(arr[j], tmp)) {
+				arr[j+d] = arr[j];
+				j -= d;
+			}
+			arr[j+d] = tmp;	
+		}
+	}
+
+	void ShellSort(vector<int> &arr, function<bool(int, int)> cmp) {
+		vector<int> distance = {5, 3, 1};
+		for (auto &d : distance) ShellSortHelp(arr, cmp, d); 
+	}
+
+};
+
+/*
 //solution 2: 
 class Solution {
 public:
@@ -107,6 +151,7 @@ public:
 	return ans;
     }
 };
+*/
 
 int main(int argc, char *argv[]) {
 
