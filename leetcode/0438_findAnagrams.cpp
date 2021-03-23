@@ -35,6 +35,45 @@ using namespace std;
    */
 
 
+/*
+// solution 1:
+class Solution{
+public:
+	void CountingSort(string &a) {
+		vector<int> cnt(26, 0); 
+		for (auto &e : a) ++cnt[e - 'a'];	
+		int idx = 0;
+		for (int i = 0; i < cnt.size(); ++i) {
+			for (int j = 1; j <= cnt[i]; ++j) a[idx++] = 'a' + i;	
+		} 
+	}
+
+	bool IsAnagram_sort(string a, string b) {
+		CountingSort(a);
+		CountingSort(b);
+		return a == b;
+	}
+
+	bool IsAnagram(string a, string b) {
+		if (a.size() != b.size()) return false;
+		vector<int> cnt(26, 0);
+		for(auto &e : a) ++cnt[e-'a'];
+		for(auto &e : b) {
+			if (--cnt[e-'a'] < 0) return false;
+		}
+		return true;
+	}
+
+    vector<int> findAnagrams(string s, string p) {
+	vector<int> ans;				
+	for (int i = 0, sl = s.size(), pl = p.size(), end = sl-pl; i <= end; ++i) {
+		if (IsAnagram(s.substr(i, pl), p)) ans.push_back(i);
+	}
+	return ans;
+    }
+};
+*/
+
 
 // solution 2:
 class Solution {
