@@ -4,6 +4,7 @@
  @ File Name	: mathematical_expression.cpp
  @ Description	: 算术表达式相关代码 
  ************************************************************************/
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -116,20 +117,67 @@ public:
 	
 		// 从后往前提取
 		for (int i = expr_strip.size() - 1; i >= 0;) {
-			
+			string elem = ExtractElem(expr_strip, i);
+			if (elem.size() <= 0) continue;
 
-
-
+			if (IsOperator(elem.back())) {
+				// 运算符
+				// 按优先级出栈运算符	
+				while (!op.empty() && IsOperator(op.top().back()) && GetOperatorPriority(elem.back()) < GetOperatorPriority(op.top().back())) {
+					ans.push_back(op.top());
+					op.pop();
+				}	
+				op.push(elem);
+			} else if (IsOpenParenthesis(elem.back())) {
+				// 左括号
+				// 出栈所有遇到的运算符， 直到遇到第一个close parenthesis	
+				while (!op.empty() && !IsCloseParenthesis(op.top().back())) {
+					ans.push_back(op.top());	
+					op.pop();
+				}
+				if (!op.empty()) op.pop();			// 出栈 close parenthesis
+			} else if (IsCloseParenthesis(elem.back())) {
+				// 右括号
+				op.push(elem);			// 直接加入到运算符栈中			
+			}  else if (IsDigit(elem.back())) {
+				// 数值
+				ans.push_back(elem);		// 直接加入结果中	
+			}	
 		}
-		
+
+		// operator stack 所有元素出栈
+		while (!op.empty()) {
+			ans.push_back(op.top());
+			op.pop();
+		}
+
+		// 翻转结果集	
 		std::reverse(ans.begin(), ans.end());
 		return ans;
 	}
 	
-
-
 	static int CalcPN(const vector<string> &pn) {
-		return 0;
+		if (pn.size() <= 0) return 0;	
+		stack<int> stk;
+		for (auto it = pn.crbegin(); it != pn.crend(); ++it) {	
+			if (IsOperator(it->back())) {
+				// 运算符
+				int operand1 = stk.top();    
+				stk.pop();
+				switch(it->back()) {
+					case '+': stk.top() = operand1 + stk.top(); break;
+					case '-': stk.top() = operand1 - stk.top(); break;
+					case '*': stk.top() = operand1 * stk.top(); break;
+					case '/': stk.top() = operand1 / stk.top(); break;
+					case '%': stk.top() = operand1 % stk.top(); break;
+					default : cout << "invalid operator" << endl; exit(EXIT_FAILURE);
+				}	
+			}  else if (IsDigit(it->back())) {
+				// 数值
+				stk.push(std::stoi(*it));
+			}	
+		}
+		return stk.top();
 	}
 };
 
@@ -156,16 +204,28 @@ class ExpressionTree {
 void TestEntry() {
 	string expr;
 	while (getline(cin, expr)) {
+
+		// 字符串提取测试
+		/*
 		expr = StripSpace(expr);
 		cout << "expr : " << expr << endl;
 		if (expr.size() <= 0) continue;
+
 		for (int idx = expr.size() - 1; idx >= 0;) {
 			string elem = PolishNotation::ExtractElem(expr, idx);
 			cout << (elem.size() ? elem : " ") << ",";
 		}	
 		cout << endl;
-	}
+		*/
 
+		// 前缀表达式
+		vector<string> pn = PolishNotation::Transform(expr);
+		std::for_each(pn.begin(), pn.end(), [](const string &str){cout << str << ", ";});
+		cout << endl;
+
+		int res = PolishNotation::CalcPN(pn);
+		cout << "res is : " << res << endl;
+	}
 }
 
 int main(int argc, char *argv[]) {
