@@ -91,7 +91,7 @@ string ExtractElem(const string &expr, int &idx) {
 		while (idx >= 0 && IsDigit(expr[idx])) elem += expr[idx--];	
 		
 		// 是否包含一目运算符 + 或 -
-		if (expr[idx] == '+' || expr[idx] == '-') {
+		if (idx >= 0 && (expr[idx] == '+' || expr[idx] == '-')) {
 			if (idx == 0 || (IsOperator(expr[idx - 1]) || IsOpenParenthesis(expr[idx-1]))) elem += expr[idx--];
 		}
 	} else if (IsOperator(expr[idx])||IsOpenParenthesis(expr[idx])||IsOpenParenthesis(expr[idx])||IsCloseParenthesis(expr[idx])) {
@@ -176,6 +176,7 @@ public:
 	static int CalcPN(const vector<string> &pn) {
 		if (pn.size() <= 0) return 0;	
 		stack<int> stk;
+		stk.push(0);			// 最前边加入操作数0 特殊处理 -(10+20) 等情况
 		for (auto it = pn.crbegin(); it != pn.crend(); ++it) {	
 			if (IsOperator(it->back())) {
 				// 运算符
@@ -246,6 +247,7 @@ public:
 	static int CalcRPN(const vector<string> &rpn) {
 		if (rpn.size() <= 0) return 0;	
 		stack<int> stk;
+		stk.push(0);			// 最前边加入操作数0 特殊处理 -(10+20) 等情况
 		for (auto it = rpn.cbegin(); it != rpn.cend(); ++it) {	
 			if (IsOperator(it->back())) {
 				// 运算符
@@ -365,25 +367,22 @@ void TestEntry() {
 		cout << endl;
 		*/
 
-		/*
 		// 前缀表达式
 		vector<string> pn = PolishNotation::Transform(expr);
 		std::for_each(pn.begin(), pn.end(), [](const string &str){cout << str << ", ";});
 		cout << endl;
-
 		int res = PolishNotation::CalcPN(pn);
 		cout << "res is : " << res << endl;
-		*/
 
-		/*
 		// 后缀表达式
 		vector<string> rpn = ReversePolishNotation::Transform(expr);
 		std::for_each(rpn.begin(), rpn.end(), [](const string &str){cout << str << ", ";});
 		cout << endl;
-		int res = ReversePolishNotation::CalcRPN(rpn);
+		res = ReversePolishNotation::CalcRPN(rpn);
 		cout << "res is : " << res << endl;
-		*/
 
+
+		/*
 		// 表达式树
 		ExpressionTree tree(expr);
 		string instr, prestr, poststr;
@@ -393,7 +392,7 @@ void TestEntry() {
 		cout << "InOrder : " << instr << endl;;
 		cout << "PreOrder : " << prestr << endl;;
 		cout << "PostOrder : " << poststr << endl;;
-
+		*/
 	}
 }
 
