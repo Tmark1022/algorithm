@@ -106,10 +106,8 @@ string ExtractElem(const string &expr, int &idx) {
 } 
 
 // 分解表达式， 提取每一个部分, 保存在一个vector中返回
-vector<string> SplitExpression(const string &expr) {
-	string expr_strip = StripSpace(expr);
+vector<string> SplitExpression(const string &expr_strip) {
 	vector<string> ans;
-	if (expr_strip.size() <= 0) return ans;
 	for (int i = expr_strip.size() - 1; i >= 0;){
 		string elem = ExtractElem(expr_strip, i);
 		if (elem.size() <= 0) continue;
@@ -129,6 +127,7 @@ public:
 		// 去掉空格
 		string expr_strip = StripSpace(expr);
 		if (expr_strip.size() <= 0) return {};
+		if (expr_strip[0] == '+' || expr_strip[0] == '-') expr_strip = "0" + expr_strip;	// 增加操作数0 应对-(10 + 20)这种情况
 		vector<string> ans;
 		stack<string> op;
 	
@@ -176,7 +175,6 @@ public:
 	static int CalcPN(const vector<string> &pn) {
 		if (pn.size() <= 0) return 0;	
 		stack<int> stk;
-		stk.push(0);			// 最前边加入操作数0 特殊处理 -(10+20) 等情况
 		for (auto it = pn.crbegin(); it != pn.crend(); ++it) {	
 			if (IsOperator(it->back())) {
 				// 运算符
@@ -206,7 +204,10 @@ class ReversePolishNotation {
 public:
 	static vector<string> Transform(const string &expr) {
 		// 去掉空格
-		vector<string> elem_list = SplitExpression(expr), ans;
+		string expr_strip = StripSpace(expr);
+		if (expr_strip.size() <= 0) return {};
+		if (expr_strip[0] == '+' || expr_strip[0] == '-') expr_strip = "0" + expr_strip;	// 增加操作数0 应对-(10 + 20)这种情况	
+		vector<string> elem_list = SplitExpression(expr_strip), ans;
 		stack<string> op;
 	
 		for (auto &elem : elem_list) {
@@ -247,7 +248,6 @@ public:
 	static int CalcRPN(const vector<string> &rpn) {
 		if (rpn.size() <= 0) return 0;	
 		stack<int> stk;
-		stk.push(0);			// 最前边加入操作数0 特殊处理 -(10+20) 等情况
 		for (auto it = rpn.cbegin(); it != rpn.cend(); ++it) {	
 			if (IsOperator(it->back())) {
 				// 运算符
