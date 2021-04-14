@@ -60,6 +60,14 @@ public:
 	Node * GetRoot() const {
 		return root;
 	}
+
+	bool IsBlack(Node *pnode) {
+		return (nullptr == pnode || pnode->color == COLOR_BLACK);
+	}
+	
+	bool IsRed(Node *pnode) {
+		return !IsBlack(pnode);
+	}
 	
 	/***************************************************
 	* traversal 
@@ -88,24 +96,137 @@ public:
 		if (Search(val)) return ;				// 已经存在	
 		Node * pnode = new Node(val, COLOR_RED); 
 		root = BSTInsert(root, pnode);
-		ReblanceAfterInsert(pnode);
+		RebalanceAfterInsert(pnode);
 		++count;
 	}
 	
 	Node *BSTInsert(Node *pcur, Node *pnode);	
-	void ReblanceAfterInsert(Node * pnode);	
+	void RebalanceAfterInsert(Node * pnode);	
 	
 
 	/***************************************************
 	* removal 
 	***************************************************/
-	void Delete(Node *pnode);		
+	Node * Successor(Node *pnode) {
+		Node *ans = pnode->right;	
+		while (ans->left) ans = ans->left;
+		return ans;
+	}
+	
+	bool Delete(int val) {
+		bool res = DeleteHelp(root, val);
+		if (res) --count;
+		return res;
+	}
 
+	bool DeleteHelp(Node *pnode, int val) {
+		if (nullptr == pnode) return false;
+		if (val < pnode->val) return DeleteHelp(pnode->left, val); 	
+		else if (val > pnode->val) return DeleteHelp(pnode->right, val); 
+		else {
+			if (nullptr == pnode->left || nullptr == pnode->right)  {
+				DeleteOneChild(pnode);		
+			} else {
+				Node *succ = Successor(pnode);
+				swap(succ->val, pnode->val);
+				DeleteOneChild(succ);	
+			}
+			return true;
+		}
+	}
+
+	void DeleteOneChild(Node *v) {
+		Node *u = v->left ? v->left : v->right;
+		Node *p = v->parent;
+
+		// 删除v节点, 接上parent 和 u 的指针	
+		if (p) {
+			// 有parent节点
+			if (v == p->left) p->left = u;
+			else p->right = u;	
+		} else {
+			// 要删除的 v 节点 就是 原来的根节点
+			root = u;	// 设置新根节点	
+		}
+		if (u) u->parent = p;	
+
+		// 开始进行平衡调整 TODO
+		if (IsRed(v) || IsRed(u)) {
+			// 一红一黑, 直接将u设置为黑色，done
+			if (u) u->color = COLOR_BLACK;
+		} else {
+			// double black, 进行后续调整
+			RebalanceAfterDelete(u, p);
+		}
+		
+		delete v;
+	}	
+
+	// u为null 是不能得到其父亲节点（没有使用特殊节点NIL代表null）， 故只能在接口中将p也传递进来了
+	void RebalanceAfterDelete(Node *u, Node *p) {
+		// step 1: 当前double black 节点是root节点, double black 直接变为 single black, done
+		if (u == root) return ;
+
+		// step 2: sibling 节点是红色的, 经过rotation操作转变为后续 sibling 为黑色的情况
+		Node *s = u == p->left ? p->right : p->left; 	
+		if (IsRed(s)) {
+			swap(p->color, s->color);
+			if (s == p->right) LeftRotation(p);
+			else RightRotation(p);
+
+			// 更新sibling 节点
+			s = u == p->left ? p->right : p->left; 	
+		}
+
+		// step 3: sibling 节点是黑色的
+		if (IsRed(s->left) || IsRed(s->right)) {
+			// step 3.a : sibling 节点存在红色的孩子节点
+			if (s == p->right) {
+				if (IsRed(s->right)) {
+					// RR case
+					swap(s->color, p->color);
+					s->right->color = COLOR_BLACK;
+					LeftRotation(p);
+				} else {
+					// RL case
+					Node *r = s->left;		// Let the red child of s be r. 
+					swap(r->color, s->color);
+					RightRotation(s);
+					swap(s, r);
+
+					swap(s->color, p->color);
+					s->right->color = COLOR_BLACK;
+					LeftRotation(p);
+				}
+			} else {
+				if (IsRed(s->left)) {
+					// LL case
+					swap(s->color, p->color);
+					s->left->color = COLOR_BLACK;
+					RightRotation(p);
+				} else {
+					// LR case
+					Node *r = s->right;
+					swap(r->color, s->color);
+					LeftRotation(s);
+					swap(s, r);
+
+					swap(s->color, p->color);
+					s->left->color = COLOR_BLACK;
+					RightRotation(p);
+				}
+			}	
+		} else {
+			// step 3.b : sibling 节点的孩子节点都是黑色
+			s->color = COLOR_RED;		
+			if (IsRed(p)) p->color = COLOR_BLACK;
+			else RebalanceAfterDelete(p, p->parent);		// 递归调用平衡过程	
+		}
+	}
 private:
 	Node * root;
 	int count;
 };
-
 
 /***************************************************
 * 成员函数类外定义 
@@ -207,7 +328,7 @@ Node * RBTree::BSTInsert(Node *pcur, Node *pnode) {
 	return pcur;
 }
 
-void RBTree::ReblanceAfterInsert(Node * pnode) {
+void RBTree::RebalanceAfterInsert(Node * pnode) {
 	// case 1: 是否为根节点
 	if (pnode == root) {
 		pnode->color = COLOR_BLACK;
@@ -229,7 +350,7 @@ void RBTree::ReblanceAfterInsert(Node * pnode) {
 				// uncle 为红色
 				grandpa->color = COLOR_RED;		
 				parent->color = uncle->color = COLOR_BLACK;
-				ReblanceAfterInsert(grandpa);			// 以grandpa节点为起点，递归调用ReblanceAfterInsert
+				RebalanceAfterInsert(grandpa);			// 以grandpa节点为起点，递归调用RebalanceAfterInsert
 			} else {
 				// uncle 为黑色, 分四种情况进行rotation
 				if (parent == grandpa->left) {
@@ -282,6 +403,8 @@ void PrintTraversalData(const RBTree &rbt) {
 
 void TestEntry() {
 	RBTree rbt;
+
+	/*
 	rbt.Insert(3);
 	rbt.Insert(21);
 	rbt.Insert(32);
@@ -312,8 +435,29 @@ void TestEntry() {
 	PrintTraversalData(rbt);
 	rbt.Insert(-100);
 	PrintTraversalData(rbt);
+	*/
 
+	rbt.Insert(20);
+	rbt.Insert(10);
+	rbt.Insert(30);
+	rbt.Insert(35);
+	rbt.Insert(25);
+	rbt.Insert(40);
 
+	PrintTraversalData(rbt);
+
+	int val;
+	while (rbt.size()) {
+		cout << "size is  : " << rbt.size() << endl;
+		cout << "val = ";
+		cin >> val;
+		bool res = rbt.Delete(val);
+		if (res) cout << "delete val : " << val << endl;
+		else cout << "miss val : " << val << endl;
+		PrintTraversalData(rbt);		
+	}
+
+	cout << "delete all nodes" << endl;
 }
 
 int main(int argc, char *argv[]) {
