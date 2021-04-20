@@ -12,13 +12,17 @@
 #include <deque>
 #include <unordered_map>
 #include <unordered_set>
+#include <stack>
 
 using namespace std;
 
 /*
 	solution 1: brute force, 枚举购入价格 和 出售价格， 取最大值  
+	
+	solution 2: 单调栈;
 
-	solution 2: 单调栈思路，减去范围内的最小购入价格 
+	solution 3: 单调栈思路; 对于上述solution2 的单调栈解法， 其实对于每次弹栈时仅仅需要比较的是栈底(范围最小值) 和 当时的栈顶(当时的一个峰值)
+				可以单纯使用一个变量来记录栈底(范围最小值)
 
 	solution 3: dp; 列举状态 设 i 代表天数， k 代表 交易次数（购入股票时递增）, 0/1 代表 是否持有股票 
 			存在如下状态转移方程:	
@@ -57,12 +61,52 @@ public:
     }
 };
 
-// solution 2: 单调栈思路， 一遍循环 
+
+// solution 2.1 : 单调栈
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+	int ans = 0;
+	vector<int> stk; 
+	prices.emplace_back(0);
+	for (auto &e : prices) {
+		while (stk.size() && e < stk.back()) {
+			ans = max(ans, stk.back() - stk.front());	
+			stk.pop_back();
+		} 	
+		stk.push_back(e);
+	}	
+	return ans;
+    }
+};
+*/
+
+// solution 2.2 : 单调栈
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+	int ans = 0;
+	vector<int> stk; 
+	prices.emplace_back(0);
+	for (auto &e : prices) {
+		if (stk.size() && e < stk.back()) {
+			ans = max(ans, stk.back() - stk.front());	
+			stk = {min(stk.front(), e)};		
+		} else {
+			stk.push_back(e);
+		}	
+	}	
+	return ans;
+    }
+};
+
+/*
+// solution 3: 单调栈思路， 一遍循环 
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
 	int ans = 0, min_price = INT_MAX;		
-	for (int i = 0; i < len; ++i) {
+	for (int i = 0; i < prices.size(); ++i) {
 		if (prices[i] < min_price) min_price = prices[i];
 		else ans = max(ans, prices[i] - min_price);
 	}
@@ -71,6 +115,7 @@ public:
 };
 */
 
+/*
 // solution 3: dp;	dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i]), 
 //			dp[i][1] = max(dp[i-1][1], -prices[i]);
 class Solution {
@@ -84,6 +129,7 @@ public:
 	return dp0;
     }
 };
+*/
 
 
 
