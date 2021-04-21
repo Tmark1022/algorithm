@@ -206,6 +206,7 @@ Node* deleteNode(Node* root, int data)
 /***************************************************
 * 测试检验代码 
 ***************************************************/
+// 先序遍历判断是否为BST 树
 bool isBST(Node *n, int lower, int upper)
 {
 	if(!n) return 1;
@@ -213,6 +214,7 @@ bool isBST(Node *n, int lower, int upper)
 	return isBST(n->left, lower, n->data) && isBST(n->right, n->data, upper) ;
 }
 
+// 后序遍历判断 AVL 树的平衡因子
 pair<int,bool> isBalanced(Node* n)
 {
 	if(!n) return pair<int,bool> (0,1);
