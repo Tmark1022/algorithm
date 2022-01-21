@@ -32,6 +32,16 @@ class Tmark<double>{
 		}
 };
 
+// 对所有指针类型进行特例化 
+template<class T>
+class Tmark<T *> {
+	public:
+		void func() {
+			cout << "type " << typeid(T *).name() << ", pointer template specialization." << "size is " << 12345 << endl; 
+		}
+};
+
+
 int main(int argc, char *argv[]) {
 	Tmark<char>().func();
 	Tmark<char *>().func();
