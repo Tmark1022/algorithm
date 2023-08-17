@@ -8,6 +8,8 @@
 #include <ctime>
 #include <cstring>
 #include <cmath>
+#include <fstream>
+#include <memory>
 #include <type_traits>
 #include <utility>
 
@@ -238,6 +240,8 @@ void Solution::MergeSort(int *arr, int size, int (*cmp)(int, int ))
 
 int Solution::Partition(int *arr, int low, int high, int (*cmp)(int, int))
 {
+	// pivot 表示调整结束后， 中枢的下标
+	// low 表示调整过程中枢位置的关键字所在下标
 	int pivot = low;
 	for (int i = low + 1; i <= high; ++i) {
 		if (cmp(arr[i], arr[low]) < 0) {
@@ -254,8 +258,8 @@ void Solution::QuickSortCore(int *arr, int low, int high, int (*cmp)(int, int ))
 		return ;
 	}	
 	int pivot = Partition(arr, low, high, cmp); 
-	if (low < pivot - 1) QuickSortCore(arr, low, pivot - 1, cmp);	
-	if (pivot + 1 < high) QuickSortCore(arr, pivot + 1, high, cmp);	
+	QuickSortCore(arr, low, pivot - 1, cmp);	
+	QuickSortCore(arr, pivot + 1, high, cmp);	
 }
 
 // 快速排序
