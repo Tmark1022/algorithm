@@ -2,7 +2,7 @@
  @ Author	: tmark
  @ Created Time	: Fri 06 Nov 2020 10:21:26 AM CST
  @ File Name	: AVL.cpp
- @ Description	: 
+ @ Description	: 参考geeks for geeks AVL 树的描述 
  ************************************************************************/
 #include <cstdint>
 #include <iostream>
@@ -90,10 +90,36 @@ Node * DoubleRotateWithRL(Node * node)
 	return LeftRotation(node);
 }
 
+/*
+// 插入时， CheckBalancePorperty(Node *node) 可以这样实现
+// 删除时， 只能使用下边的实现， 下边的实现也能用在插入
+Node * CheckBalanceProperty(Node *node)  
+{
+	if (Balance(node) > 1) {
+		if (node->key < node->left->key) {
+			// LL case
+			node = SingleRotateWithLL(node);
+		} else {
+			// LR case
+			node = DoubleRotateWithLR(node);
+		}
+	} else if (Balance(node) < -1) {
+		if (node->key > node->right->key) {
+			// RR case
+			node = SingleRotateWithRR(node);
+		} else {
+			// RL case
+			node = DoubleRotateWithRL(node);
+		}
+	}
+	return node;
+}
+*/
+
 Node * CheckBalanceProperty(Node *node)  
 {		
 	if (Balance(node) == 2) {
-		if (Balance(node->left) >= 0) {
+		if (Balance(node->left) >= 0) {			// 插入节点时， 不会出现 == 0 的情况; 删除时， 会出现 == 0 的情况
 			// LL case
 			node = SingleRotateWithLL(node);
 		} else {
