@@ -93,10 +93,10 @@ Node * DoubleRotateWithRL(Node * node)
 /*
 // 插入时， CheckBalancePorperty(Node *node) 可以这样实现
 // 删除时， 只能使用下边的实现， 下边的实现也能用在插入
-Node * CheckBalanceProperty(Node *node)  
+Node * CheckBalanceProperty(Node *node, int data)  
 {
 	if (Balance(node) > 1) {
-		if (node->key < node->left->key) {
+		if (data < node->left->key) {
 			// LL case
 			node = SingleRotateWithLL(node);
 		} else {
@@ -104,7 +104,7 @@ Node * CheckBalanceProperty(Node *node)
 			node = DoubleRotateWithLR(node);
 		}
 	} else if (Balance(node) < -1) {
-		if (node->key > node->right->key) {
+		if (data > node->right->key) {
 			// RR case
 			node = SingleRotateWithRR(node);
 		} else {
@@ -157,6 +157,7 @@ Node* insertToAVL(Node* node, int data)
 	}
 
 	// check balance property
+	// node = CheckBalanceProperty(node, data);  
 	node = CheckBalanceProperty(node);  
 	
 	// update height	
