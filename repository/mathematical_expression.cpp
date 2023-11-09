@@ -94,7 +94,7 @@ string ExtractElem(const string &expr, int &idx) {
 		if (idx >= 0 && (expr[idx] == '+' || expr[idx] == '-')) {
 			if (idx == 0 || (IsOperator(expr[idx - 1]) || IsOpenParenthesis(expr[idx-1]))) elem += expr[idx--];
 		}
-	} else if (IsOperator(expr[idx])||IsOpenParenthesis(expr[idx])||IsOpenParenthesis(expr[idx])||IsCloseParenthesis(expr[idx])) {
+	} else if (IsOperator(expr[idx])||IsOpenParenthesis(expr[idx])||IsCloseParenthesis(expr[idx])) {
 		// 其他合法字符
 		elem += expr[idx--];
 	} else {
@@ -367,6 +367,7 @@ void TestEntry() {
 		cout << endl;
 		*/
 
+		/*
 		// 前缀表达式
 		vector<string> pn = PolishNotation::Transform(expr);
 		std::for_each(pn.begin(), pn.end(), [](const string &str){cout << str << ", ";});
@@ -380,9 +381,8 @@ void TestEntry() {
 		cout << endl;
 		res = ReversePolishNotation::CalcRPN(rpn);
 		cout << "res is : " << res << endl;
+		*/
 
-
-		/*
 		// 表达式树
 		ExpressionTree tree(expr);
 		string instr, prestr, poststr;
@@ -392,7 +392,6 @@ void TestEntry() {
 		cout << "InOrder : " << instr << endl;;
 		cout << "PreOrder : " << prestr << endl;;
 		cout << "PostOrder : " << poststr << endl;;
-		*/
 	}
 }
 
