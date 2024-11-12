@@ -55,6 +55,8 @@ public:
 private:
 	void ShellInsert(int *arr, int size, int (*cmp)(int, int), int d);
 	void CounterRadixSort(int *from, int *to, int size, int (*cmp)(int, int), int *count, int *pos, int r, int m);
+	void Merge(int *arrSrc, int *arrTar, int i, int k, int j, int (*cmp)(int, int));
+	void MSort(int *arr, int *tmp, int low, int high, int level, int (*cmp)(int, int));
 	int Partition(int *arr, int low, int high, int (*cmp)(int, int));
 	void QuickSortCore(int *arr, int low, int high, int (*cmp)(int, int ));
 
@@ -231,11 +233,41 @@ void Solution::RadixSort(int *arr, int size, int (*cmp)(int, int ))
 	free(pos);
 }
 
+void Solution::Merge(int *arrSrc, int *arrTar, int i, int k, int j, int (*cmp)(int, int))
+{
+	int idx1 = i, idx2 = k+1, idxt = i;
+	while (idx1 <= k && idx2 <= j) {
+		if (cmp(arrSrc[idx1], arrSrc[idx2]) <= 0) arrTar[idxt++] = arrSrc[idx1++];
+		else arrTar[idxt++] = arrSrc[idx2++];
+	}
+
+	while (idx1 <= k) arrTar[idxt++] = arrSrc[idx1++];
+	while (idx2 <= j) arrTar[idxt++] = arrSrc[idx2++];
+}
+
+// level, 偶数层次merge时， 结果期望在arr中 (开始的调用是0， 数组为1时，结果就在arr中， 可以直接啥也不干)
+// level, 基数层次merge时， 结果期望在tmp中
+void Solution::MSort(int *arr, int *tmp, int low, int high, int level, int (*cmp)(int, int))
+{
+	if (low == high) {
+		if (level & 1) tmp[low] = arr[low];
+		return ;
+	}
+
+	int mid = low + (high - low) / 2;
+	MSort(arr, tmp, low, mid, level+1, cmp);	
+	MSort(arr, tmp, mid+1, high, level+1, cmp);	
+
+	if (level & 1) Merge(arr, tmp, low, mid, high, cmp);
+	else Merge(tmp, arr, low, mid, high, cmp);
+}
+
 // 归并排序
 void Solution::MergeSort(int *arr, int size, int (*cmp)(int, int ))
 {
-
-
+	int *tmp = (int*)malloc(sizeof(int) * size);
+	MSort(arr, tmp, 0, size - 1, 0, cmp); 
+	free(tmp);
 }
 
 int Solution::Partition(int *arr, int low, int high, int (*cmp)(int, int))
