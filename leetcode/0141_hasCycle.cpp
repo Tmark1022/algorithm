@@ -46,19 +46,19 @@ public:
 */
 
 /*
-// solution 2: Floyd 判圈算法 
+// solution 2: Floyd 判圈算法, 快慢指针
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
-	if (nullptr == head || nullptr == head->next) return false;
-	ListNode *slow = head, *fast = head->next;			
-	while (slow != fast) {
-		if (nullptr == fast->next || nullptr == fast->next->next) return false;
-		slow = slow->next;	
-		fast = fast->next->next;
-	}		
-	return true; 	
+        ListNode *slow = head, *fast = head;
+        while (fast && fast->next) {
+            slow = slow->next; 
+            fast = fast->next->next;
+            if (slow == fast) return true;
+        } 
+        return false; 
     }
+
 };
 */
 
