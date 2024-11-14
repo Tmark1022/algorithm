@@ -14,6 +14,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::string;
+using std::swap;
 
 /*
 题意只允许使用O(1)时间复杂度
@@ -23,6 +24,8 @@ solution 2: 反转数组
 solution 3: 环状替换, 从start下标开始, 每次找到最终的位置替换下来，被替换的元素也相应找其最终位置并替换， 直到所有都替换下来
 	这里有两个关键点 1) 当前环中不会出现访问到之前已经访问过的下标， 因为之前访问过的下标都是由start开始计算出来的， 只有再次通过start下标， 才能在此到达之前已经访问过的位置。
 			2) 每个环中含有的下标是不相交的
+
+			3) 当最大公约数不为1， 即外层循环有多层时，为什么++start, 怎么确保从start+1开始和从start开始不在一个环内（即从start开始时，start+1并没有访问过）。 该问题可以用反证法证明， 如果从start开始， start + 1被访问过， 那么同理从start+1开始， start+2也必定访问过， 以此类推，n,k的最大公约数必唯一。即根本不会出来++start。
    */
 
 /*
@@ -61,21 +64,18 @@ public:
 // solution 3
 class Solution {
 public:
+
     void rotate(vector<int>& nums, int k) {
-        int len = nums.size();
-        if (len <= 1) return ;
-        k = k%len;
-        for (int start = 0, count = 0; count < len; ++start) {
-                int cur = start, prev = nums[start], tmp, next;
+	int size = nums.size();        
+        k = k % size;
+        for (int start = 0, count = 0; count < size; ++start) {
+                int cur = start, tmp = nums[start];
                 do {
-                        next = (cur + k)%len;
-                        tmp = nums[next];
-                        nums[next] = prev;
-                        ++count;
-                        cur = next;
-                        prev = tmp;
-                } while (start != cur);
-        }
+                    cur = (cur + k) % size;
+                    swap(tmp, nums[cur]);
+                    ++count;
+                } while (cur != start);
+        } 
     }
 };
 
