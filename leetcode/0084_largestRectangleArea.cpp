@@ -156,6 +156,30 @@ public:
 	}	
 	return area;
     }
+
+
+    /*
+	// solution 5: divide & conquer, 以高度最低的元素 划分 左子问题 和 右子问题
+    int largestRectangleArea(vector<int>& heights) {
+        return _largestRectangleArea(heights, 0, heights.size() - 1);
+    }
+
+    int _largestRectangleArea(vector<int>& heights, int low, int high) {
+        if (low > high) {
+            return 0;
+        }
+
+        int pivot = low;  
+        for (int i = low + 1; i <= high; ++i) {
+            if (heights[i] < heights[pivot]) pivot = i;
+        } 
+
+        return max(
+            max(_largestRectangleArea(heights, low, pivot - 1), _largestRectangleArea(heights, pivot + 1, high)),
+            (high - low + 1) * heights[pivot]
+        );
+    }
+    */
      
 };
 
