@@ -154,16 +154,11 @@ public:
     }
     
     void push(int x) {
-	if (stk.empty()) {
-		stk.push(0);
-		min_val = x;
-	} else {
-		long long diff = x - min_val;			
-		stk.push(diff);
-		if (diff < 0) {
-			// update min_val
-			min_val = x;	
-		}
+	long long diff = x - min_val;			
+	stk.push(diff);
+	if (diff < 0) {
+		// update min_val
+		min_val = x;	
 	}
     }
     
