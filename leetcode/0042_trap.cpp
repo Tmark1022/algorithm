@@ -52,29 +52,22 @@ solution 5: 双指针左右夹逼【面积思路2】， solution 4的优化版;
 // solution 1: 暴力
 class Solution {
 public:
-    int trap(vector<int>& height) {	
-	int area = 0;	
-	int len = height.size();
-	if (len <= 2) return area;
-		
-	for (int i = 1; i < len - 1; ++i) {	
-		// 左边界
-		int left = i-1;				
-		while (left >= 0 && height[left] <= height[i]) --left;
-		if (left < 0) continue;	
+    // solution 1: 面积思路一, 暴力法; 找左右边界时， 需要排除同样高度的情况（同样高度只计算一遍）
+    int trap(vector<int>& height) {
+        int res = 0, left, right;
+        for (int i = 1; i < height.size() - 1; ++i) {
+	    // 左边界
+            for (left = i - 1; left >= 0 && height[left] <= height[i]; --left);
+            if (left < 0) continue;
 
-		// 右边界
-		int right = i+1;
-		while (right < len && height[right] < height[i]) ++right; 
-		if (right >= len || height[right] == height[i]) continue;
-	
-		// 计算area 
-		int w = right - left - 1; 		
-		int h = std::min(height[left], height[right]) - height[i];
-		area += w*h;
-	}
+	    // 右边界
+            // 这里使用height[right] < height[i], 而不是<=, 用于排除相同高度； 即前边的计算结果都为0， 只有最后一个相同高度的有效
+            for (right = i + 1; right < height.size() && height[right] < height[i]; ++right); 
+            if (right >= height.size()) continue;
 
-	return area;	
+            res += (right - left - 1) * (min(height[left], height[right]) - height[i]); 
+        }
+        return res;
     }
 };
 */
@@ -83,28 +76,23 @@ public:
 // solution 2: 单调栈(递减)
 class Solution {
 public:
-    int trap(vector<int>& height) {	
-	int area = 0;	
-	int len = height.size();
-	if (len <= 2) return area;
-	stack<int> stk;	
+    int trap(vector<int>& height) {
+        int res = 0, idx, w, h;
+        stack<int> stk;
 
-	for (int right = 0; right < len; ++right) {	
-		// stk中两个相邻的相同高度， 因为先出栈的那个h会计算为0， 所以area加0, 后续的才会计算真实接雨水量， 不会造成重复	
-		while (!stk.empty() && height[right] > height[stk.top()]) {		
-			int idx = stk.top();
-			stk.pop();			
-			if (stk.empty()) break;
-			int left = stk.top();
-			
-			int w = right - left - 1; 		
-			int h = std::min(height[left], height[right]) - height[idx];
-			area += w*h;
-		}	
-		stk.push(right);
-	}
+        for (int i = 0; i < height.size(); ++i) {
+            while (stk.size() && height[stk.top()] <= height[i]) {
+                idx = stk.top();
+                stk.pop();
+                if (stk.empty()) continue;
 
-	return area;	
+                w = i - stk.top() - 1;
+                h = min(height[stk.top()], height[i]) - height[idx];
+                res += w * h;
+            }
+            stk.push(i);
+        }
+        return res;
     }
 };
 */
@@ -113,22 +101,16 @@ public:
 // solution 3: 暴力v2
 class Solution {
 public:
-    int trap(vector<int>& height) {	
-	int area = 0;	
-	int len = height.size();
-	if (len <= 2) return area;
-		
-	for (int i = 1; i < len - 1; ++i) {	
-		// left max
-		int left_max = height[i];				
-		for (int j = i-1; j >= 0; --j) left_max = std::max(left_max, height[j]);
-		// right max
-		int right_max = height[i];				
-		for (int j = i+1; j < len; ++j) right_max = std::max(right_max, height[j]);
-
-		area += std::min(left_max, right_max) - height[i];
-	}
-	return area;	
+    // solution 3: 面积思路二； 暴力找左右最大高度(且比当前高度要高)
+    int trap(vector<int>& height) {
+        int res = 0, leftMax, rightMax;
+        for (int i = 1; i < height.size() - 1; ++i) {
+            leftMax = rightMax = height[i];
+            for (int j = i - 1; j >= 0; --j) leftMax = max(leftMax, height[j]); 
+            for (int j = i + 1; j < height.size(); ++j) rightMax = max(rightMax, height[j]); 
+            res += min(leftMax, rightMax) - height[i];
+        }
+        return res;
     }
 };
 */
@@ -137,22 +119,19 @@ public:
 // solution 4: dp
 class Solution {
 public:
-    int trap(vector<int>& height) {	
-	int area = 0;	
-	int len = height.size();
-	if (len <= 2) return area;	
-	vector<int> left_max(len), right_max(len);	
-	
-	// left_max
-	left_max[0] = height[0];	
-	for (int i = 1; i < len; ++i) left_max[i] = std::max(left_max[i-1], height[i]);
-	// right_max 
-	right_max[len-1] = height[len-1];	
-	for (int i = len-2; i >= 0; --i) right_max[i] = std::max(right_max[i+1], height[i]);
-	// calc area
-	for (int i = 1; i < len-1; ++i) area += std::min(left_max[i], right_max[i]) - height[i];	
-	return area;	
-    }
+    // solution 4: 面积思路二; dp
+    int trap(vector<int>& height) {
+        int size = height.size(), res = 0;
+        vector<int> left(size), right(size);
+
+        left[0] = height[0];
+        for (int i = 1; i < size; ++i) left[i] = max(left[i - 1], height[i]);
+        right[size - 1] = height[size - 1];
+        for (int i = size - 2; i >= 0; --i) right[i] = max(right[i + 1], height[i]);
+
+        for (int i = 1; i < size - 1; ++i) res += min(left[i], right[i]) - height[i];
+        return res;
+   }
 };
 */
 
@@ -160,22 +139,19 @@ public:
 // solution 5: 双指针
 class Solution {
 public:
+    // solution 5: 面积思路二； 双指针
     int trap(vector<int>& height) {
-        int area = 0;
-        int len = height.size();
-        if (len <= 2) return area;
-        int left_max = 0, right_max = 0, left = 0, right = len-1;
-
+        int res = 0, leftMax = 0, rightMax = 0, left = 0, right = height.size() - 1;
         while (left < right) {
-                if (height[left] < height[right]) {
-                        left_max = std::max(left_max, height[left]);
-                        area += left_max - height[left++];
-                } else {
-                        right_max = std::max(right_max, height[right]);
-                        area += right_max - height[right--];
-                }
-        }
-        return area;
+            if (height[left] <= height[right]) {
+                leftMax = max(leftMax, height[left]);
+                res += leftMax - height[left++]; 
+            } else {
+                rightMax = max(rightMax, height[right]);
+                res += rightMax - height[right--];
+            }
+        } 
+        return res;
     }
 };
 */
