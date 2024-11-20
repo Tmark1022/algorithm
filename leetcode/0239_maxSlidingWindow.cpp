@@ -5,6 +5,7 @@
  @ Description	: 239. 滑动窗口最大值
  ************************************************************************/
 #include <iostream>
+#include <queue>
 #include <vector>
 #include <deque>
 #include <climits>
@@ -12,28 +13,6 @@
 
 using namespace std;
 
-// 单调队列类
-class MonotonicQueue {
-public:
-	// 入队
-	void Push(int val) {
-		while (!que.empty() && que.back() < val) que.pop_back(); 
-		que.push_back(val);
-	}
-
-	// 出队  
-	void Pop(int val) {
-		if (que.front() == val) que.pop_front();
-	}
-
-	int Max() {
-		return que.front();
-	}
-
-private:
-	// 采用双端队列来实现
-	deque<int> que;	
-};
 
 void PrintVec(const vector<int> &nums) {
 	for (auto elem : nums) {
@@ -66,6 +45,20 @@ public:
     // solution 2: 使用priority_queue 替代solution1中的内层循环， log(n) 时间复杂度入队， 然后O(1)找出最大值 
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
         vector<int> res;
+        priority_queue<pair<int, int>> pq;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            pq.push({nums[i], i});
+            if (i >= k - 1) {
+                res.push_back(pq.top().first);
+                while (pq.size() && pq.top().second <= i - k + 1) pq.pop();
+            }
+        }
+        return res; 
+    }
+
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> res;
         auto cmp = [](const pair<int, int> &a, const pair<int, int> &b){return a.first <= b.first;};
         priority_queue<pair<int, int>, vector<pair<int,int>>, decltype(cmp)> pq(cmp);
 
@@ -79,22 +72,27 @@ public:
     }
     */
 
+	/*
+
 	// solution 3: 单调队列; 相对于暴力， 要提高效率可以从如何更快地从滑动窗口中找到最大值;
 	// 这里我们可以借助递减队列(单调队列)来快速找到最大值， 递减队列存储的是滑动窗口中可能作为下一个最大值的值下标， 队头是当前滑动窗口的最大值 
-    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-	vector<int> res;
-	int len = nums.size();	
-	MonotonicQueue que;
 
-	for(int i = 0; i < len; ++i) {
-		que.Push(nums[i]);
-		if (i >= k-1) {
-			res.push_back(que.Max());
-			que.Pop(nums[i-k+1]);
-		}
-	}		
-	return res;
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> res;
+        deque<int> que;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            while (que.size() && nums[que.back()] <= nums[i]) que.pop_back();
+            que.push_back(i);
+
+            if (i >= k - 1) {
+                res.push_back(nums[que.front()]);
+                if (i - k + 1 == que.front()) que.pop_front();
+            }
+        }
+        return res;
     }
+    */
 
 	/*
 	// solution 4: dp, 将数组划分为大小k的子数组， 
