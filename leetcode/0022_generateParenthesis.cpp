@@ -21,8 +21,9 @@ using std::stack;
 solution 1: 暴力， "()" 全排列， 然后判断合法性
 solution 2: 回溯 + 剪枝, 
 solution 3: 用栈实现solution2的递归 , 栈记录递归每一层的状态
-solution 4: 动态规划 【迭代】, 递推公式(不是很明白推导过程): dp[i] = (dp[a])dp[b];
-solution 5: 动态规划 【递归】, 原理同上
+solution 4: BFS搜索实现
+solution 5: 动态规划 【迭代】, 递推公式(不是很明白推导过程): dp[i] = (dp[a])dp[b], 0 <= a <i, b = i-1-a;
+solution 6: 动态规划 【递归】, 原理同上
 */
 
 /*
@@ -165,7 +166,39 @@ public:
 */
 
 /*
-// solution 4: 动态规划 【迭代】, 递推公式(不是很明白推导过程): dp[i] = (dp[a])dp[b];
+// solution 4: BFS
+class Solution {
+public:
+    struct Node{
+       int open, close;
+       string s; 
+       Node(int o, int c, string s):open(o), close(c), s(s) {}
+    };
+
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        deque<Node> que = {Node(n, n, "")};
+        while (que.size()) {
+            auto cur = que.front();
+            que.pop_front();
+            if (cur.open == 0 && cur.close == 0) {
+                res.emplace_back(cur.s);  
+                continue;
+            }
+
+            if (cur.open) que.emplace_back(cur.open - 1, cur.close, cur.s + '(');
+            if (cur.open < cur.close) que.emplace_back(cur.open, cur.close - 1, cur.s + ')');
+        }
+        return res;
+    }
+};
+*/
+
+
+
+
+/*
+// solution 5: 动态规划 【迭代】, 递推公式(不是很明白推导过程): dp[i] = (dp[a])dp[b];
 class Solution {
 public:	
     vector<string> generateParenthesis(int n) {
@@ -197,7 +230,7 @@ public:
 };
 */
 
-// solution 5: solution 4 递归解法
+// solution 6: solution 5 递归解法
 class Solution {
 public:	
 	const vector<string>& Generate(int n, vector<vector<string>> &dp) {		
