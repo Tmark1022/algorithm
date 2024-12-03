@@ -18,7 +18,7 @@ using std::string;
 
 // solution 1:回溯 
 // solution 2:递归二进制枚举 + 剪枝
-// solution 3:dp, C(n,k) = C(n-1,k-1) + C(n-1,k), 通俗解释就是是否取当前的n, 来缩小问题规模, f(n, k) = [f(n0,k-1)->push_back(n)] + f(n-1, k);  
+// solution 3:dp, C(n,k) = C(n-1,k-1) + C(n-1,k), 通俗解释就是是否取当前的n(二进制枚举), 来缩小问题规模, f(n, k) = [f(n0,k-1)->push_back(n)] + f(n-1, k);  
 // solution 4:字典序法实现组合, 参考官方解法
 
 
