@@ -68,9 +68,16 @@ public:
 
 	for (int i = 0; i < (1 << len); ++i) {
 		tmp.clear();
-		for (int j = 0; j < len; ++j) {
-			if (i & (1 << j)) tmp.push_back(nums[j]);					
-		}	
+		
+		// 此处循环改为下边的形式更优
+		//for (int j = 0; j < len; ++j) {
+		//	if (i & (1 << j)) tmp.push_back(nums[j]);					
+		//}	
+			
+		for (int j = 0, k = i; k; ++j, k >>= 1) {
+			if (1 & k) tmp.emplace_back(nums[j]);
+		}
+
 		ans.push_back(tmp);
 	}	
 	return ans;
