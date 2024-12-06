@@ -12,7 +12,7 @@
 using namespace std;
 
 /*
-solution 1: 回溯
+solution 1: 回溯, 常规for循环枚举方式的递归实现
 solution 2: 二进制枚举, 迭代实现
 solution 3: 二进制枚举, 递归实现(回溯) 
 solution 4: 借鉴二进制枚举，根据n取与不取， 可以得出递推关系式 f(n) = f(n-1) + (f(n-1)结果中加上元素n)  
