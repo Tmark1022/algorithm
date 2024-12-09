@@ -172,22 +172,6 @@ public:
 	return ans;
     }
 };
-
-// solution 6: 位运算 [上面写法 leetcode C++编译器不支持, 如最高位为1,再进行<< 会报溢出错误, 故改成下面的写法]
-class Solution {
-public:
-    int majorityElement(vector<int>& nums) {
-        int half = nums.size() / 2, ans = 0, i = 1;
-        while (true) {
-                int count = 0;
-                for (auto &e : nums) e&i && ++count;
-                if (count > half) ans |= i;
-                if (i == INT_MIN) break;          
-                i <<= 1;
-        }
-        return ans;
-    }
-}
 */
 
 
