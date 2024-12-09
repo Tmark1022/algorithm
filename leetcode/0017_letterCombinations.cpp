@@ -72,33 +72,8 @@ public:
 };
 */
 
-/*
-// solution 2: f(n) = for_each(f(n-1)) append(digits[n]); 递归实现
-class Solution {
-public:
-	vector<string> recur(int n, string& digits, const vector<string>& map) {
-		if (n < 0) {
-			return {""};
-		}
-
-		vector<string> last = recur(n-1, digits, map);  	
-		vector<string> ans;
-		for (auto &str : last)
-			for (auto &e : map[digits[n] - '0']) 
-				ans.push_back(str+e);
-
-		return ans;
-	}
-
-    vector<string> letterCombinations(string digits) {
-	if (!digits.size()) return {};
-	const vector<string> map = {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-	return recur(digits.size() - 1, digits, map); 
-    }
-};
-*/
-
 // solution 2: f(n) = for_each(f(n-1)) append(digits[n]); 迭代实现， 其实可以简单地使用一个队列来模拟这个过程
+//		相当于每次处理一层的层序遍历BFS
 class Solution {
 public:
     vector<string> letterCombinations(string digits) {

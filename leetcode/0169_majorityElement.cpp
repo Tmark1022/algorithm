@@ -23,7 +23,7 @@ using namespace std;
 解法 ： 
 	solution 1：暴力， 枚举每一个数组中的元素出现次数， 找到一个元素出现次数大于ceil(N/2)即终止， 最多要枚举N/2次就能枚举到答案元素。
 			时间复杂度为 O(N^2), 空间复杂度为O(1)
-	
+		
 	solution 2: hash table， 使用hash table来统计元素出现次数。
 			时间复杂度为 O(N), 空间复杂度为O(N)
 
@@ -133,14 +133,27 @@ public:
 // solution 5: boyer moore 投票算法
 class Solution {
 public:
+    // int majorityElement(vector<int>& nums) {
+    //     int candidate = nums[0], vote = 0;
+    //     for (int i = 1; i < nums.size(); ++i) {
+    //     	if (candidate == nums[i]) ++vote; 	
+    //     	else if (!vote) candidate = nums[i];
+    //     	else --vote;  
+    //     }
+    //     return candidate;
+    // }
+
     int majorityElement(vector<int>& nums) {
-	int candidate = nums[0], vote = 0;
-	for (int i = 1; i < nums.size(); ++i) {
-		if (candidate == nums[i]) ++vote; 	
-		else if (!vote) candidate = nums[i];
-		else --vote;  
-	}
-	return candidate;
+	    int candidate, vote = 0;
+	    for (const auto &e : nums) {
+		    if (!vote) {
+			    candidate = e;
+			    vote = 1;
+		    } else {
+			    candidate == e ? ++vote : --vote;
+		    }
+	    }
+	    return candidate;
     }
 };
 */
