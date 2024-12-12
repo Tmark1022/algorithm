@@ -112,7 +112,7 @@ public:
 	}
 
     int minMutation(string start, string end, vector<string>& bank) {
-        unordered_set<string> set(bank.begin(), bank.end()), bset({start}), eset({end});
+        unordered_set<string> set(bank.begin(), bank.end());
         if (!set.count(end)) return -1;
 	set.erase(start);
 	BackTracking(start, end, set, 0);

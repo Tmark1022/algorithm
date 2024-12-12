@@ -52,6 +52,7 @@ public:
 };
 */
 
+/*
 // solution 2 : DFS
 class Solution {
 public:
@@ -68,6 +69,30 @@ public:
 	vector<vector<int>> ans;			
 	dfs(root, 0, ans);
 	return ans;
+    }
+};
+*/
+
+// solution 3 : Divide & Conquer
+class Solution {
+public:
+
+    vector<vector<int>> levelOrder(TreeNode* root) {
+	    if (!root) return {};
+
+	    auto lRet = levelOrder(root->left);
+	    auto rRet = levelOrder(root->right);
+	    vector<vector<int>> res = {{root->val}};
+	    for (int lIdx = 0, rIdx = 0; lIdx < lRet.size() || rIdx < rRet.size(); ) {
+		    if (lIdx >= lRet.size()) res.emplace_back(rRet[rIdx++]);
+		    else if (rIdx >= rRet.size()) res.emplace_back(lRet[lIdx++]);
+		    else {
+			res.emplace_back(lRet[lIdx++]);
+			res.back().insert(res.back().end(), rRet[rIdx].begin(), rRet[rIdx].end());
+			++rIdx;
+		    }
+	    }
+	    return res;
     }
 };
 
