@@ -23,13 +23,13 @@ public:
 	int ans = INT_MAX;
 	void backTracking(vector<int>& coins, int amount, int step) {
 		cout << ans << ","  << step << "," << amount << endl;
-		if (amount < 0) return ;
 		if (amount == 0) {
 			ans = std::min(ans, step);		
 			return ;
 		}
 		// 提前剪枝	
-		if(step >= ans) return ;	
+		if (amount < 0 || step >= ans - 1 || step + round(1.0 * amount / coins[0]) >= ans)
+
 		for (const auto &e : coins)  backTracking(coins, amount-e, step + 1); 
 	}		
 
@@ -68,7 +68,7 @@ public:
 	
     int coinChange(vector<int>& coins, int amount) {
 	if (amount == 0) return 0;
-	vector<int> res(amount+1, -2);		// -2 代表还没有计算
+	vector<int> res(amount+1, -2);		// -2 代表还没有计算, >= -1 表示已经计算过了
 	res[0] = 0;
 	recur(coins, amount, res);
 	return res[amount] == INT_MAX ? -1 : res[amount];
@@ -246,13 +246,6 @@ public:
     }
 };
 */
-
-
-
-
-
-
-
 
 
 // solution 7: 完全背包问题 TODO
