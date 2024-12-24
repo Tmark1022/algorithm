@@ -17,6 +17,7 @@
 using namespace std;
 
 
+/*
 // solution 1: 直接模拟走路, 每次走一步， 判断当前坐标是否有障碍, 因为每条前进指令的最大行走步数为 1~9, 所以时间复杂度为O(N+K), N为command大小， K为obstacle大小
 //		使用unordered_set存储坐标， 因为pair没有对应的hash类， 所以可以转成字符串来使用unordered_set;
 //		不要使用set， set使用红黑树来存储数据， 每次查找性能为log(n)
@@ -45,10 +46,51 @@ public:
 	return ans;	
     }
 };
+*/
 
 
+// 自定义hash<pair<int,int>>
+class MyHasher {
+public:
+    size_t operator()(const pair<int, int> &ref) const {
+        return hashInt(ref.first + ref.second);
+    }
+private:
+    hash<int> hashInt;
+};
+
+class Solution {
+public:
+    vector<vector<int>> directDiff = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        unordered_set<pair<int, int>, MyHasher> set;
+        for (auto &vec : obstacles) set.insert({vec[0], vec[1]});
+        int res = INT_MIN, direct = 0, x = 0, y = 0;
+        for (auto c : commands) {
+            if (-2 == c) direct = (direct + 3) % 4;
+            else if (-1 == c) direct = (direct + 1) % 4;
+            else {
+                while (c--) {
+                    x += directDiff[direct][0];
+                    y += directDiff[direct][1];
+
+                    if (set.count({x, y})) {
+                        x -= directDiff[direct][0];
+                        y -= directDiff[direct][1];
+                        break;
+                    }
+                }
+                res = max(res, x*x + y*y);
+            }
+        }
+        return res;
+    }
+};
 
 int main(int argc, char *argv[]) {
-
+	Solution obj;
+	vector<int> commands = {4,-1,3};
+	vector<vector<int>> obstacles;
+	cout << obj.robotSim(commands, obstacles) << endl;;
 	return 0;
 }
