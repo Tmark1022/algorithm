@@ -38,54 +38,131 @@ using namespace std;
 
 
 /*
-// solution 1: BFS
+// solution 1: dfs 回溯， 枚举所有路径可能
 class Solution {
 public:
-    int jump(vector<int>& nums) {
-	vector<bool> visit(nums.size(), false);		// 题意nums.size()总是大于0		
-	deque<int> que; 
-	que.push_back(0);
-	visit[0] = true;
-	
-	int step = 0;
-	while(que.size()) {
-		for (int cnt = que.size(); cnt; --cnt) {
-			int cur = que.front();
-			que.pop_front();
-			if (cur == nums.size() - 1) return step;	
-			for (int i = 1; i <= nums[cur]; ++i) {
-				int next = cur + i;
-				if (next < nums.size() && !visit[next]) {
-					que.push_back(next);
-					visit[next] = true;
-				}
-			}
-		}
-		++step;
-	}
-	return -1;	
+    int jump(vector<int>& nums) {   
+        int res = INT_MAX;
+        vector<bool> visit(nums.size(), false);  
+        visit[0] = true;
+        dfs(0, nums, visit, 0, res);
+        return res; 
     }
-};
 
-// solution 2:
-class Solution {
-public:
-    int jump(vector<int>& nums) {
-	vector<int> dist(nums.size(), INT_MAX);		// 题意nums.size()总是大于0, 并且总是可达的		
-	dist[0] = 0;
-	for (int i = 0; i < nums.size(); ++i) {
-		for (int j = 1; j <= nums[i]; ++j) {
-			int next = i + j; 	
-			if (next < nums.size()) dist[next] = min(dist[next], dist[i] + 1);
-		}
-	}	
-	return dist[nums.size() - 1];
+    void dfs(int cur, const vector<int> &nums, vector<bool> &visit, int step, int &res) {
+        int term = nums.size() - 1;
+        if (cur == term) {
+            res = step;
+            return ;
+        }
+
+        // pruning
+        if (step >= res - 1) return ;
+
+        for (int next = min(term, cur + nums[cur]); next > cur; --next) {
+            if (visit[next]) continue;
+            visit[next] = true;
+            dfs(next, nums, visit, step + 1, res);
+            visit[next] = false;
+        } 
     }
 };
 */
 
-// solution 6:
+
+
 /*
+// solution 2: BFS
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int term = nums.size() - 1, step = 0;
+        if (0 == term) return step;
+        vector<bool> visit(nums.size(), false);
+        visit[0] = true;
+        deque<int> que = {0};
+        while (que.size()) {
+            ++step;
+            for(int cnt = que.size(); cnt; --cnt) {
+                auto cur = que.front();
+                que.pop_front();
+                for (int next = min(term, cur+nums[cur]); next > cur; --next) {
+                    if (visit[next]) continue;
+                    if (next == term) return step;
+                    visit[next] = true;
+                    que.emplace_back(next);
+                }
+            }
+        }
+        return -1;
+    }
+};
+*/
+
+
+
+/*
+// solution 3:类似BFS？
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int term = nums.size() - 1;
+        vector<int> dist(nums.size(), INT_MAX);
+        dist[0] = 0;
+        for (int i = 0; i < nums.size() && INT_MAX == dist[term]; ++i) {
+            // if (INT_MAX == dist[i])  return -1;  // 因为题意确保一定可达， 故可以不用改判断
+            for (int j = i + 1, e = min(term, i + nums[i]); j <= e; ++j) {
+                dist[j] = min(dist[j], dist[i] + 1);
+            }
+        }
+        return dist[term];
+    }
+};
+*/
+
+/*
+/// solution 4: dp
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        vector<int> dp(nums.size(), INT_MAX);
+        dp[0] = 0;
+        for (int k = 1; k < nums.size(); ++k) {
+            for (int j = max(0, k - 1000); j < k; ++j) {
+                if (j + nums[j] >= k) dp[k] = min(dp[k], dp[j] + 1);
+            }
+        }
+        return dp[nums.size() - 1];
+ 
+
+        
+    }
+};
+*/
+
+/*
+// solution 5: 贪心1, O(1000N)
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int step = 0, term = nums.size() - 1;
+        while (term) {
+            ++step;
+            // 因为确保一定有答案， 故这里不做不可达判断
+            for (int idx = max(0, term - 1000); idx < term; ++idx) {
+                if (idx + nums[idx] >= term) {
+                    term = idx;
+                    break;
+                }
+            }
+        }
+        return step;
+    }
+};
+*/
+
+/*
+// solution 6: 贪心2, O(N)
 class Solution {
 public:
     int jump(vector<int>& nums) {
@@ -105,7 +182,7 @@ public:
 };
 */
 
-//  solution 6: 每次
+// solution 6: 贪心2, O(N)
 class Solution {
 public:
     int jump(vector<int>& nums) {
