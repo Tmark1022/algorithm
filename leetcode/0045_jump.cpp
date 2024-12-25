@@ -17,16 +17,23 @@ using namespace std;
 
 /*
 
-   solution 1: 【超时】bfs, 从leetcode 55中可以知道， 该问题可以转换为图寻找最短路径问题， 这里只需要求最短路径长度， 所以可以使用BFS;
+   solution 1: 【超时】dfs回溯, 枚举所有路劲， 找出最短路径。
+		时间复杂度为指数级 
+
+
+   solution 2: 每次一层bfs, 从leetcode 55中可以知道， 该问题可以转换为图寻找最短路径问题， 这里只需要求最短路径长度， 所以可以使用BFS;
 		时间复杂度为 O(n+e), e最多为N^2, 故最终时间复杂度为 O(N^2)
 
-   solution 2: 【超时】使用辅助数组dist， 遍历nums， 设置其cur的所有下一跳next的最小次数为 dist[next] = min(dist[next], dist[cur] + 1) 
+   solution 3: 其实原理就是BFS求单源点最短路劲问题； 使用辅助数组dist， 遍历nums， 设置其cur的所有下一跳next的最小次数为 dist[next] = min(dist[next], dist[cur] + 1) 
 		时间复杂度为O(N^2)
 	
-   solution 3: 相较于solution2， 因为需要使用O(N)的事件复杂度来维护dist数组， 那是否可以优化掉这部分?
-		观察一下什么时候step才会加1, 只有当当前遍历到的nums值到达上一次step的最大延伸位置时， 才会+1
-		时间复杂度O(N)
+   solution 4: dp, 因为有 0 <= nums[i] <= 1000, 所以 dp[N] = min(dp[N-1000 ... N-1]) + 1
+		时间复杂度为O(1000N)
 
+   solution 5: 贪心算法1; 反向跳跃查找，每次找出能跳跃到当前点的最远的起点， 跳跃次数加1; O(1000N)
+
+   solution 6: 贪心算法2, 正向跳跃查找，每次找出从当前起点能跳跃到的最远的点。
+		时间复杂度O(N)
 */
 
 
@@ -77,7 +84,8 @@ public:
 };
 */
 
-// solution 3:
+// solution 6:
+/*
 class Solution {
 public:
     int jump(vector<int>& nums) {
@@ -95,6 +103,27 @@ public:
 	return step;
     }
 };
+*/
+
+//  solution 6: 每次
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int step = 0, maxIdx = 0, lastMaxId = -1, tmp = INT_MIN;
+        while (maxIdx < nums.size() - 1) {
+            ++step;
+            // 寻找下一跳能够达到的最远距离
+            for (int i = lastMaxId + 1; i <= maxIdx; ++i) {
+                tmp = max(tmp, i + nums[i]);
+            }
+            lastMaxId = maxIdx;
+            maxIdx = tmp;
+        }
+        return step;
+    }
+};
+
+
 
 
 int main(int argc, char *argv[]) {

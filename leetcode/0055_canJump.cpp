@@ -19,9 +19,10 @@ using namespace std;
 // solution 1: 这个其实可以转换为一个图寻找路径, 顶点就是所有的nums值, 边就是每一个顶点能够延伸到的范围值;
 //		所以这个问题可以使用DFS 或者 BFS(因为知道起点和终点， 所以也能使用双向BFS)来解决; 时间复杂度为o(N+e), e极端情况下是N^2, 所以时间复杂度为O(N^2) 
 
-// solution 2: 贪婪， 维护right值表示能从起点开始能到达的右边最远距离， right 大于nums.size() 即证明终点可达	
+// solution 2: 贪婪， 维护right or maxIdx值表示能从起点开始能到达的右边最远距离， right >= nums.size() - 1 即证明终点可达	
 
 
+/*
 // solution 2
 class Solution {
 public:
@@ -32,6 +33,19 @@ public:
 		right = max(right, i + nums[i]);
 	}
 	return true;
+    }
+};
+*/
+
+// solution 2
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        for (int idx = 0, maxIdx = 0; maxIdx < nums.size() - 1; ++idx) {
+            if (idx > maxIdx) return false;
+            maxIdx = max(maxIdx, idx + nums[idx]);
+        }
+        return true;
     }
 };
 
