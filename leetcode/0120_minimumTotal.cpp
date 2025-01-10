@@ -60,7 +60,58 @@ public:
 	return ans;
     }
 };
+*/
 
+/*
+// solution 2: 负值边单源点最短路径
+class Solution {
+public:
+    // solution 2: 具有负值边的单源点最短
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int row = triangle.size(); 
+        vector<vector<pair<int, bool>>> dist;
+        for (int i = 1; i <= row; ++i) {
+            dist.emplace_back(i, pair<int, bool>(INT_MAX, false));
+        }
+        dist[0][0] = make_pair(triangle[0][0], true);
+        deque<pair<int, int>> que = {{0, 0}}; 
+
+        while (que.size()) {
+            auto node = que.front();
+            que.pop_front();
+            int x = node.first, y = node.second; 
+            dist[x][y].second = false;      // 表示移出队列
+
+            if (x >= row - 1) continue;
+
+            if (dist[x][y].first + triangle[x+1][y] < dist[x + 1][y].first) {
+                dist[x + 1][y].first = dist[x][y].first + triangle[x+1][y];
+                if (!(dist[x + 1][y].second)) {
+                    dist[x + 1][y].second = true;       // 表示入队
+                    que.emplace_back(x+1, y);
+                }
+            }
+
+            if (dist[x][y].first + triangle[x+1][y+1] < dist[x + 1][y+1].first) {
+                dist[x + 1][y+1].first = dist[x][y].first + triangle[x+1][y+1];
+                if (!(dist[x + 1][y+1].second)) {
+                    dist[x + 1][y+1].second = true;     // 表示入队
+                    que.emplace_back(x+1, y+1);
+                }
+            }
+        }
+
+        // 最后一排的最小值就是答案
+        int res = INT_MAX;
+        for (auto &p : dist[row - 1]) {
+            res = min(res, p.first); 
+        }
+        return res;
+    }
+};
+*/
+
+/*
 // solution 2: dijkstra(拓扑排序方式)
 class Solution {
 public:
@@ -103,7 +154,9 @@ public:
 	return ans;
     }
 };
+*/
 
+/*
 // solution 3: dp; 状态转移方程为 f(l,i) = min(f(l-1, i-1), f(l-1, i)) + triangle[l][i]; 当 l < 0 || i < 0, f(l, i) = INT_MAX
 class Solution {
 public:
