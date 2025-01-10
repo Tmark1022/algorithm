@@ -154,6 +154,35 @@ public:
 	return ans;
     }
 };
+
+// solution 2: 拓扑排序优化版dijkstra, 又因为刚好上一排都访问完后， 下一排节点的入度就为0，故我们可以将层序遍历的结果当做拓扑排序的结果。
+//		故代码可以简化为如下， 时间复杂度为O(N), 空间复杂度为O(N)
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int row = triangle.size(); 
+        vector<vector<int>> dist;
+        for (int i = 1; i <= row; ++i) {
+            dist.emplace_back(i, INT_MAX);
+        }
+        dist[0][0] = triangle[0][0];
+
+        for (int x = 0; x < row - 1; ++x) {
+            for (int y = 0; y <= x; ++y) {
+                dist[x+1][y] = min(dist[x+1][y], dist[x][y] + triangle[x+1][y]);
+                dist[x+1][y+1] = min(dist[x+1][y+1], dist[x][y] + triangle[x+1][y+1]);
+            }
+        }
+
+        // 最后一排的最小值就是答案
+        int res = INT_MAX;
+        for (auto &p : dist[row - 1]) {
+            res = min(res, p); 
+        }
+        return res;
+    }
+};
+
 */
 
 /*
