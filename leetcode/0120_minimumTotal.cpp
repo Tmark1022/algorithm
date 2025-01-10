@@ -21,7 +21,8 @@ using namespace std;
 	N 为三角形数组中的元素个数	
 
 	solution 1: dfs回溯搜索, O(2^N), 空间复杂度为O(l), l为递归深度， l也是三角形的高（总行数） 
-	solution 2: dijkstra （加权图最短路径问题）, 因为图无环， 可以使用拓扑排序的方式获得下一个节点， 时间复杂度为 O(N), 空间复杂度为O(N) 
+	solution 2: 因为存在负值边， 故不能直接使用dijkstra （加权图最短路径问题）算法, 可以直接使用存在负值边的最短路径算法。
+			但是又因为图无环， 可以使用拓扑排序的方式获得下一个节点， 时间复杂度为 O(N), 空间复杂度为O(N) 
 	solution 3: dp, 设 l 为行数， i为数组下标值; f(l, i) 代表从起点到第l行下标i的位置的最小路径和;
 			状态转移方程为 f(l,i) = min(f(l-1, i-1), f(l-1, i)) + triangle[l][i]; 当 l < 0 || i < 0, f(l, i) = INT_MAX 类似triange使用二维数组作为dp table
 			时间复杂度 O(N), 空间复杂度O(N)
