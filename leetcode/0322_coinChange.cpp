@@ -96,7 +96,7 @@ public:
     }
 };
 
-// 从前往后另一种写法， 但这不是标准的动态规划写法
+// 从前往后另一种写法， 但这不是标准的动态规划写法 (类似拓扑排序优化版的单源点最短路径问题)
 //class Solution {
 //public:	
 //    int coinChange(vector<int>& coins, int amount) {
