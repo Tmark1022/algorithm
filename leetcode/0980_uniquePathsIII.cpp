@@ -81,6 +81,62 @@ public:
 
 
 /*
+// solution 1: dfs 回溯
+class Solution {
+public:
+    vector<vector<int>> xyDiff = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    int row, col;
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        row = grid.size(), col = grid[0].size();
+        int sx, sy, res = 0, visit = 0;
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                if (1 == grid[i][j]) {
+                    sx = i, sy = j;
+                } else if (-1 == grid[i][j]) {
+                    visit |= 1 << calcPos(i, j);
+                }
+            }
+        }
+        backTrack(sx, sy, grid, res, visit);
+        return res;
+    }
+
+    int calcPos(int x, int y) {
+        return x * col + y;
+    }
+
+    void backTrack(int x, int y, vector<vector<int>> &grid, int &res, int &visit) {
+        if (x < 0 || x >= row || y < 0 || y >= col) return ;
+
+        int posVal = (1 << calcPos(x, y));
+        if (visit & posVal) return ;
+
+        visit |= posVal;
+
+        if (2 == grid[x][y]) {
+            // 找到终点了
+            if (Check(visit)) ++res;     // 全部都访问了
+        } else {
+            // 没到终点
+            for (auto &diff : xyDiff) {
+                backTrack(x + diff[0], y + diff[1], grid, res, visit);
+            }
+        }
+
+        visit ^= posVal;
+
+    }
+
+    bool Check(int &visit) {
+        return visit == (1 << (row*col)) - 1;
+    }
+
+};
+*/
+
+
+/*
 // solution 2: dp, m*n == 20, 使用int 位图来表示点集, 但是创建dp数组是， 因为最后一维需要 1 << m*n 个元素， 需要使用大量的空间， 但是其实最后一维只使用很少的空间
 //		400ms， 很慢
 class Solution {
@@ -165,6 +221,59 @@ public:
         return dp[x][y][set];
     }
 };
+
+/*
+// solution 3: dp, 二进制优化版
+class Solution {
+public:
+    vector<vector<int>> xyDiff = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    int row, col;
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        row = grid.size(), col = grid[0].size(); 
+        int sx, sy, dx, dy, visit = 0;  
+        for (int i = 0; i < row; ++i) { 
+            for (int j = 0; j < col; ++j) {
+                if (-1 != grid[i][j]) {
+                    visit |= 1 << calcPos(i, j); 
+                    if (1 == grid[i][j]) {
+                        sx = i, sy = j;
+                    } else if (2 == grid[i][j]) {
+                        dx = i, dy = j;
+                    }
+                }
+            }
+        }
+
+        unordered_map<int, int> dp = {{calcKey(sx, sy, 1 << calcPos(sx, sy)), 1}}; 
+        return recurse(dx, dy, visit, dp);
+    }
+    
+    int calcPos(int x, int y) {
+        return x * col + y;
+    }
+
+    int calcKey(int x, int y, int visit) {
+        return (calcPos(x, y) << (row * col)) | visit;
+    } 
+
+    int recurse(int x, int y, int visit, unordered_map<int, int> &dp) {
+        if (x < 0 || x >= row || y < 0 || y >= col) return 0;
+
+        int posVal = 1 << calcPos(x, y);
+        if (!(visit & posVal)) return 0;            // 障碍物或者不能从该状态进行转移
+
+        int key = calcKey(x, y, visit);
+        if (dp.count(key)) return dp[key];          // memoization 
+
+        visit ^= posVal;
+        int cnt = 0;
+        for (auto &diff : xyDiff) {
+            cnt += recurse(x + diff[0], y + diff[1], visit, dp);
+        }
+        return dp[key] = cnt; 
+    }
+};
+*/
 
 
 
