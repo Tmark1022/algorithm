@@ -22,13 +22,22 @@ using namespace std;
    solution 2: dp, 需要注意的是， 要求组合数， 而不是排列数 
 		状态转移方程 f(i) = f(i - coins[x1]) + f(i - coins[x2]) + ..  是排列数，  
 		
-		设 f(i, k) 表示金额i使用前k个硬币时， 最大有多少中组合数;
-		存在如下状态转移方程:
-			f(i, k) = f(i, k-1) + f(i-coins[k], k); 
 
-		这是一个二维dp, 又因为f(i, k) 只与 k-1 有关， 所以可以使用一维滚动数组来优化空间， 优化后的状态转移方程为:
-			f(i) = f(i) + f(i-coins[k]);
+		dp (inspire fron solutoin 1, 回溯， 观察到状态转移)， 设 f(i, v) 为使用下边0 ~ i 的coins, 组成面值为v的组合数
+    		状态转移方程：
+			f(i, v) = f(i-1, v) + f(i-1, v-coins[i]) + f(i-1, v-coins[i]*2) + ... ;     v - coins[i] * x >= 0
+    		
+    		base case:
+    		 1) 当 v == 0时， f(i, v) = 1;
+    		 2) 当 i < 0 时， 除了当v == 0 时 f(i, v) = 1， 其他情况 f(i, v) 均为0
+    		 3）v < 0 时， 均是非法状态， f(i, v) 均是0
 
+
+		基于上边推导出来的递推关系式， 有 f(i, v-coins[i]) = f(i-1, v-coins[i]) + f(i-1, v-coins[i]*2) + ... ; 
+		两相结合一下， 上述关系式可以优化为 f(i, v) = f(i-1, v) + f(i, v-coins[i])
+
+		这是一个二维dp, 又因为f(i, v) 只与 i-1 有关， 所以可以采取从左到右的方式遍历， 且使用一维滚动数组来优化空间， 优化后的状态转移方程为:
+			f(v) = f(v) + f(v-coins[i]);
    */
 
 /*
@@ -54,11 +63,36 @@ public:
 };
 */
 
-// solution 2: dp, time complexity O(amout * N), space complexity O(amount);
+/*
+// solution 2: dp, f(i, v) = f(i-1, v) + f(i-1, v-coins[i]) + f(i-1, v-coins[i]*2) + ... ;     v - coins[i] * x >= 0
 class Solution {
 public:
     int change(int amount, vector<int>& coins) {
-	vector<int> dp(amount + 1, 0);
+        if (amount == 0) return 1;
+	// 旧的测试用例可以过， 新增的测试用例不行了， 得 unsinged long long 才可以
+        // vector<int> dp(amount + 1, 0);
+        vector<unsigned long long> dp(amount + 1, 0);
+        dp[0] = 1;
+
+        for (auto coin : coins) {
+            for (int j = amount; j >= 1; --j) {		// 右到左进行遍历
+                for (int k = j / coin; k > 0; --k) {
+                    dp[j] += dp[j - k * coin];
+                }
+            }
+        }
+        return dp[amount];
+    }
+};
+*/
+
+// solution 2: dp, 优化后的递推关系式, f(v) = f(v) + f(v-coins[i]);
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+	// 旧的测试用例可以过， 新增的测试用例不行了， 得 unsinged long long 才可以
+        // vector<int> dp(amount + 1, 0);
+        vector<unsigned long long> dp(amount + 1, 0);
 	dp[0] = 1;
 	for (auto &c : coins) {
 		for (int i = c; i <= amount; ++i) {
