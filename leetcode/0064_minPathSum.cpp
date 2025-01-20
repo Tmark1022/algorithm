@@ -90,7 +90,7 @@ public:
     }
 };
 
-// solution 2: 优化版dijkstra 【通过】
+// solution 2: 拓扑排序优化版dijkstra 【通过】
 class Solution {
 public:
     int minPathSum(vector<vector<int>>& grid) {
@@ -131,6 +131,24 @@ public:
 		}
 	}		
 	return INT_MAX;	
+    }
+};
+
+
+// solution 2: 拓扑排序优化版dijkstra 【通过】, 刚好顺序访问就是一种topology排序结果, 故代码可以优化为如下
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> dist(m, vector<int>(n, INT_MAX));
+        dist[0][0] = grid[0][0];
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i + 1 < m) dist[i+1][j] = min(dist[i+1][j], dist[i][j] + grid[i+1][j]);
+                if (j + 1 < n) dist[i][j+1] = min(dist[i][j+1], dist[i][j] + grid[i][j+1]);
+            }
+        }
+        return dist[m-1][n-1];
     }
 };
 */
