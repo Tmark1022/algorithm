@@ -56,6 +56,7 @@ public:
 };
 */
 
+/*
 // solution 2: dp
 //			存在如下状态转移方程:
 //				if (s[i] == 0)【只能解码两个字符】	dp[i] = dp[i-2];
@@ -79,6 +80,25 @@ public:
 		prev = cur;
 	}		
 	return prev;
+    }
+};
+*/
+
+
+// solution 2: dp;  f(i) = f(i-1) + f(i-2), tc O(N), sc O(1)
+//	当 s[i] != '0' 时， 能用一个字符进行解码
+//	当 i > 0 && (s[i-1] == '1' || (s[i-1] == '2' && s[i] <= '6')) 时， 能用两个字符进行解码
+class Solution {
+public:
+    int numDecodings(string s) {
+        int dp = 1, dp1 = 1, dp2 = 1;
+        for (int i = 0; i < s.size() && dp; ++i) {		// dp 为0 提前结束循环
+            dp = 0;
+            if (s[i] != '0') dp += dp1; 
+            if (i > 0 && (s[i-1] == '1' || (s[i-1] == '2' && s[i] <= '6'))) dp += dp2;
+            dp2 = dp1, dp1 = dp; 
+        }
+        return dp;
     }
 };
 
