@@ -26,11 +26,14 @@ using namespace std;
 					if (s[i] == '(')	: g(i) = g(i-1) + 1;
 					else			: g(i) = max(g(i-1) - 1, 0);
 
+			该 g(i) 其实可以简化为一个变量open, 用于表示i （不包含i）之前还有多少个未被匹配的open parenthese 符号。
+
 			
-			设 f(i) 表示一下标为i的字符结尾的子串中最大的合法匹配子串的 '()' 对数; 最大合法子串长度 即 f(i) * 2;
+			设 f(i) 表示一下标为i的字符结尾的子串中最大的合法匹配子串的长度;
 				f(i)存在如下状态转移方程:
-					if (s[i] == ')' && g[i-1] > 0)	: f(i) = f(i-1) + 1 + f(i - 2 * (f(i-1) + 1)) 
-					else				: f(i) = 0			// 包括 s[i] == '(' 和 s[i] == ')' 但 g[i-1] == 0 两种情况
+					
+					if (s[i] == ')' && open > 0)	: f(i) = 2 + f(i-1) + f(i - (f(i-1) - 2)) 
+					else				: f(i) = 0			// 包括 s[i] == '(' 和 s[i] == ')' 但 open == 0 两种情况
 
 			
 			时间复杂度O(N), 空间复杂度O(N)
@@ -84,48 +87,20 @@ public:
 class Solution {
 public:
     int longestValidParentheses(string s) {
-	    int len = s.size(), ans = 0;
-	    if (!len) return ans;
+        int open = 0, res = 0;           // 表示前边还有多少个未匹配的open parenthese
+        vector<int>dp(s.size(), 0);
 
-	    vector<int> g(len + 1, 0), f(len+1, 0);	 
-	    for (int i = 1; i <= len; ++i) {
-		    // g
-		    if (s[i-1] == '(') g[i] = g[i-1] + 1;
-		    else g[i] = max(0, g[i-1] - 1);
-
-		    // f 
-		    if (s[i-1] == ')' && g[i-1] > 0) {
-			f[i] = f[i-1] + 1 + f[i - 2 *(f[i-1] + 1)]; 
-			ans = max(f[i], ans);
-		    }
-		    // 本来f 初始化就是0, 可以不用执行else 逻辑
-		    //else f[i]= 0;
-	    } 
-	    return 2 * ans;
+        for (int i = 0; i < s.size(); ++i) {
+            if ('(' == s[i]) ++open;
+            else {
+                if (open) dp[i] = 2 + dp[i-1] + (i-dp[i-1]-2 >= 0 ? dp[i-dp[i-1]-2] : 0), res = max(res, dp[i]);
+                open = max(open - 1, 0);
+            }
+        }
+        return res;
     }
 };
 
-// solution 2: dp; g 数组空间优化版
-class Solution {
-public:
-    int longestValidParentheses(string s) {
-	    int len = s.size(), ans = 0;
-	    if (!len) return ans;
-	    vector<int> f(len+1, 0);	 
-	    int g = 0;
-	    for (int i = 1; i <= len; ++i) {
-		    // f 
-		    if (s[i-1] == ')' && g > 0) {
-			f[i] = f[i-1] + 1 + f[i - 2 *(f[i-1] + 1)]; 
-			ans = max(f[i], ans);
-		    } 
-		    // g
-		    if (s[i-1] == '(') g += 1;
-		    else g = max(0, g - 1);
-	    } 
-	    return 2 * ans;
-    }
-};
 
 // solution 3: dp
 class Solution {
