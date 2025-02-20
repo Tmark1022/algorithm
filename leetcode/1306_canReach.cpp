@@ -40,6 +40,24 @@ public:
 	    return false;
     }
 };
+
+
+// dfs, arr[start] 设置为负数或者 -arr[start] 表示已经访问
+class Solution {
+public:
+    bool canReach(vector<int>& arr, int start) {
+        int len = arr.size();
+        if (start < 0 || start >= len || arr[start] < 0) return false;
+        if (!arr[start]) return true;
+
+        int tmp = arr[start];
+        arr[start] = -arr[start];
+        return canReach(arr, start - tmp) || canReach(arr, start + tmp);
+    }
+};
+
+
+
 */
 
 // solution 2: bfs, time complexity O(N), space complexity O(N)
