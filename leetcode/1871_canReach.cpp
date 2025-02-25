@@ -130,8 +130,7 @@ public:
 //		2) 区间[i - maxJump, i - minJump] 存在可达的下标。
 //
 //		故 存在如下递推关系式
-//		f(i) = 0; when s[i] == '1' 
-//		f(i) = OR{f(i-maxJump), f(i-maxJump + 1), ...., f(i-minJump)};
+//		f(i) = (s[i] == '0') && OR{f(i-maxJump), f(i-maxJump+1), ..., f(i-minJump)}
 // 
 //		OR{f(i-maxJump), f(i-maxJump + 1), ...., f(i-minJump)} 的结果可以在遍历过程中动态维护该区间的可达下标数量来快速求解
 // 
@@ -141,17 +140,17 @@ public:
 class Solution {
 public:
     bool canReach(string s, int minJump, int maxJump) {
-	    vector<bool> dp(s.size(), false);
-	    dp[0] = true;
-	    int cnt = 0;
-	    for (int i = 1; i < s.size(); ++i) {
-		    if (i - minJump >= 0 && dp[i - minJump]) ++cnt;
-		    if (s[i] == '0' && cnt) dp[i] = true;
-		    if (i - maxJump >= 0 && dp[i - maxJump]) --cnt;
-	    }
-	    return dp[s.size() - 1];
+        int t = s.size() - 1, cnt = 0;
+        vector<bool> dp(t+1, false);
+        dp[0] = true;
+        for (int i = minJump; i <= t; ++i) {
+            if (dp[i-minJump]) ++cnt;
+            if (cnt && s[i] == '0') dp[i] = true;
+            if (i-maxJump >= 0 && dp[i-maxJump]) --cnt;
+        }
+        return dp[t];
     }
-}; 
+};
 
 
 
