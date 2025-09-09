@@ -16,7 +16,7 @@ using namespace std;
 class Solution {
 public:
 	/*
-	// solution 1: dp, f(n) = f(n-1) + f(n-2)
+	// solution 1: dp, f(n) = f(n-1) + f(n-2); build dp table, bottom-up
 	// 因为n 只与 n-1 和 n-2 有关， 所以不需要一整个数组， 只需要两个辅助变量即可
     int climbStairs(int n) {
 	if (1 == n) return 1;	
@@ -41,7 +41,7 @@ public:
     }
     */
 
-	//solution 3
+	//solution 3, recurse && memoization
     int climbStairs(int n) {
         vector<int> res(n+1, 0);
 	res[0] = 1;

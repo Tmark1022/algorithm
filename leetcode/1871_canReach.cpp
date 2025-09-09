@@ -84,7 +84,7 @@ public:
 	    vector<bool> bingo(s.size(), false);
 	    bingo[0] = true;
 	    int boundary = 1, t = s.size() - 1;
-	    for (int i = 0; i <= t && boundary <= t; ++i) {
+	    for (int i = 0; i < boundary && boundary <= t; ++i) {
 		    // i 并不是一个可跳跃点 或者 i 并不可达
 		    if ('1' == s[i] || !bingo[i]) continue;
 
@@ -95,7 +95,7 @@ public:
 		    }
 
 		    // 更新boundary 
-		    boundary = min(t, i + maxJump) + 1;
+		    boundary = i + maxJump + 1;
 	    }
 	    return bingo[t];
     }
@@ -109,20 +109,22 @@ public:
 class Solution {
 public:
     bool canReach(string s, int minJump, int maxJump) {
-	    s[0] = '2';		// s 原地修改， '2' 表示可达
-	    int boundary = 1, t = s.size() - 1;
-	    for (int i = 0; i <= t && boundary <= t; ++i) {
-		    // i 并不是一个可跳跃点 或者 i 并不可达
-		    if ('2' != s[i]) continue;
+        int len = s.size();
+        s[0] = '2';
+        for (int i = 0, boundry = 1; i < boundry && boundry < len; ++i) {
+            if ('2' != s[i]) continue;
 
-		    // 设置该区间可达
-		    for (boundary = max(boundary, i + minJump); boundary <= min(t, i + maxJump); ++boundary) {
-			    if ('0' == s[boundary]) s[boundary] = '2'; 
-		    }
-	    }
-	    return '2' == s[t];
+            for (int j = max(boundry, i + minJump); j <= min(i + maxJump, len - 1); ++j) {
+                if ('0' != s[j]) continue;
+                s[j] = '2';
+            }
+
+            // update boundry
+            boundry = i + maxJump + 1; 
+        } 
+        return s.back() == '2';
     }
-}; 
+};
 */
 
 // solution 4: dp, 设f(i) 表示下标为i的位置是否可达。f(i) 位置可达需要满足如下两个条件。
@@ -132,7 +134,7 @@ public:
 //		故 存在如下递推关系式
 //		f(i) = (s[i] == '0') && OR{f(i-maxJump), f(i-maxJump+1), ..., f(i-minJump)}
 // 
-//		OR{f(i-maxJump), f(i-maxJump + 1), ...., f(i-minJump)} 的结果可以在遍历过程中动态维护该区间的可达下标数量来快速求解
+//		OR{f(i-maxJump), f(i-maxJump + 1), ...., f(i-minJump)} 的结果可以在遍历过程中动态维护该区间的可达下标数量(滑动窗口)来快速求解
 // 
 //		
 //		time complexity : O(N), space complexity : O(N)

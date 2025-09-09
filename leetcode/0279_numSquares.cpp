@@ -77,6 +77,21 @@ public:
     }
 };
 
+// solution 2: dp - bottom-up
+class Solution {
+public:
+    int numSquares(int n) {
+        vector<int> dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 1; i <= n; ++i) {
+            for (int k = floor(sqrt(i)); k; --k) {
+                dp[i] = min(dp[i], dp[i - k * k] + 1);
+            }
+        }
+        return dp[n];
+    }
+};
+
 // solution 3: BFS, 转化为图论问题， 0~n 每一个值都是一个顶点， 每一个顶点都有squares.size()条边 
 //		时间复杂度为O(n+e), 即为O(n + n*n^(1/2)), 空间复杂度 O(n)	
 class Solution {
