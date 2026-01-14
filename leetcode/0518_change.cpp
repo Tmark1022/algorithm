@@ -90,9 +90,9 @@ public:
 class Solution {
 public:
     int change(int amount, vector<int>& coins) {
-	// 旧的测试用例可以过， 新增的测试用例不行了， 得 unsinged long long 才可以
+	// 旧的测试用例可以过， 新增的测试用例不行了， 得 unsinged long 才可以 (原因在于amount 前的某个数的结果会大于INT_MAX)
         // vector<int> dp(amount + 1, 0);
-        vector<unsigned long long> dp(amount + 1, 0);
+        vector<unsigned long> dp(amount + 1, 0);
 	dp[0] = 1;
 	for (auto &c : coins) {
 		for (int i = c; i <= amount; ++i) {
