@@ -142,6 +142,7 @@ public:
 
 */
 
+/*
 // solution 5: 正逆向扫描结合
 class Solution {
 public:
@@ -169,7 +170,33 @@ public:
 	    return ans;
     }
 };
+*/
 
+
+// solution 5: 正逆向扫描结合, 模版写法
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int res = 0;
+        res = max(res, help(s.begin(), s.end(), '('));
+        res = max(res, help(s.rbegin(), s.rend(), ')'));
+	return res;
+    }
+
+    template<class Iter, class Ch>
+    int help(Iter b, Iter e, Ch flag) {
+        int open = 0, close = 0, res = 0;
+        for (Iter it = b; it != e; ++it) {
+            if (flag == *it) ++open;
+            else {
+                ++close;
+                if (open == close) res = max(res, open + close);
+                else if (close > open) close = open = 0;
+            }
+        }
+        return res;
+    }
+};
 
 
 
