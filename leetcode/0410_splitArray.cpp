@@ -22,7 +22,7 @@ using namespace std;
 
 	solution 2: dp; 设 f(i, k) 表示 前i个元素分成k个连续数组后所有连续数组的最大和的最小值;
 			存在如下状态转移方程【其中sum(i, j) 表示[i, j]区间和】:
-				f(i, k) = min{max(f(j0, k-1), sum(j0+1, i), max(f(j1, k-1), sum(j1+1, i), .... max(f(k-1, k-1), sum(k, i)); 
+				f(i, k) = min{max(f(j0, k-1), sum(j0+1, i)), max(f(j1, k-1), sum(j1+1, i)), .... max(f(k-1, k-1), sum(k, i))}; 
 					// 其中j的取值范围为 [k-1, i)
 					
 			base case:	
@@ -38,9 +38,8 @@ using namespace std;
 			空间优化:
 				上述状态转移方程中， 其实K的状态只与K-1有关， 可以使用一维滚动数组来进行空间优化
 
-	solution 3: 贪心 + 二分; 对于给定的nums 和 m, 最后答案值的范围为[max(nums), sum(nums)], 可以通过二分的方式，最终收敛于最终答案
-			时间 O(N * logSum(nums)), 空间 O(1)
-			
+	solution 3: 贪心 + 二分; 对于给定的nums 和 m, 最后答案值的范围为[max(nums), sum(nums)], 可以通过二分的方式，枚举区间最大值， 看按该值能分成多少组【跟组数m比较】， 最终收敛于最终答案
+			时间 O(N * log(Sum(nums)), 空间 O(1)
    */
 
 

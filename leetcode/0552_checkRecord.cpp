@@ -108,6 +108,54 @@ public:
         return (dp0 + dp1 + dp2 + dp3 + dp4 + dp5) % mod;
     }
 };
+
+// solution 2: 上一个解法的qucik power 优化版
+class Solution {
+public:
+    using Matrix = vector<vector<long>>;
+    int checkRecord(int n) {
+        Matrix m = {
+            {1, 1, 0, 1, 0, 0},
+            {1, 0, 1, 1, 0, 0},
+            {1, 0, 0, 1, 0, 0},
+            {0, 0, 0, 1, 1, 0},
+            {0, 0, 0, 1, 0, 1},
+            {0, 0, 0, 1, 0, 0},
+        };
+        // 初始化单位矩阵
+        Matrix res = {
+            {1, 0, 0, 0, 0, 0},
+            {0, 1, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 1, 0},
+            {0, 0, 0, 0, 1, 1},
+        };
+
+        // qucik power 
+        while (n) {
+            if (n & 1) res = MatrixMul(res, m);
+            m = MatrixMul(m, m);  
+            n >>= 1; 
+        }
+        return accumulate(res[0].begin(), res[0].end(), long(0)) % 1000000007;
+    }
+
+    // 矩阵行列式 (这里其实写死了6*6)
+    Matrix MatrixMul(Matrix &ma, Matrix &mb) {
+        Matrix res(6, vector<long>(6, 0));
+        for(int i = 0; i < 6; ++i) {
+            for (int j = 0; j < 6; ++j) {
+                for (int k = 0; k < 6; ++k) {
+                    res[i][j] += ma[i][k] * mb[k][j];
+                }
+                res[i][j] %= 1000000007;
+            }
+        }
+        return res; 
+    }
+};
+
 */
 
 // solution 3: dp
