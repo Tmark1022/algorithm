@@ -19,13 +19,13 @@ using namespace std;
 /*
 	solution 1: 回溯, 时间复杂度为O(N!) 
 	
-	solution 2: 记忆化递归; 需要注意子问题划分， 子问题需要相互独立;	
-			设f(i, j)表示开区间(i, j)的获得最大硬币数量, K表示区间(i, j)最后戳爆的气球ID， 存在如下状态转移方程: 
-				f(i, j) = max{nums[i] * nums[k] * nums[j] + f(i, k), + f(k, j), ...};		// i < k < j
+	solution 2: dp, recurse + memoization; ;	
+			设f(i, j)表示开区间(i, j)的获得最大硬币数量, K表示区间(i, j)最后【注意是最后】戳爆的气球ID， 存在如下状态转移方程: 
+				f(i, j) = max{nums[i] * nums[k] * nums[j] + f(i, k) + f(k, j), ...};		// i < k < j
 				
 				当 i >= j - 1; 开区间中没有可选的K， 所以f(i, j) = 0	
 
-	solution 3: dp; 最优子结构 + 重叠子问题
+	solution 3: dp; build dp table && bottom up
    */
 
 

@@ -86,32 +86,6 @@ public:
     }
 };
 
-// solution 2: 滑动窗口(1)
-class Solution {
-public:
-	bool IsCover(unordered_map<char, int>& smap, unordered_map<char, int> &tmap) {
-		for (const auto & e : tmap) {
-			if (smap[e.first] < e.second) return false;	
-		}
-		return true;
-	}
-    string minWindow(string s, string t) {
-	unordered_map<char, int> tmap, smap;	
-	for (auto &e : t) ++tmap[e];
-
-	int pos = -1, min_len = INT_MAX, slen = s.size(), tlen = t.size();
-	for (int left = 0, right = 0; right < slen; ++right) {
-		++smap[s[right]];
-		while (IsCover(smap, tmap)) {
-			if (right - left + 1 < min_len) pos = left, min_len = right - left + 1;		
-			--smap[s[left]];
-			++left;
-		}	
-	}
-	if (pos < 0) return "";		
-	else return s.substr(pos, min_len);
-    }
-};
 */
 
 /*

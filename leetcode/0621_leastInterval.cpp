@@ -100,6 +100,51 @@ public:
 	return step;
     }
 };
+
+// solution 2: greedy
+class Node{
+public:
+    Node(char key, int val):key(key), val(val) {}
+    bool operator<(const Node &obj) const {
+        return this->val <= obj.val;
+    }
+    char key;
+    int val;
+};
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        if (0 == n) return tasks.size(); 
+
+        unordered_map<char, int> amountMap;
+        for (auto &e : tasks) ++amountMap[e];         
+        priority_queue<Node> que;
+        for (auto &p : amountMap) que.emplace(p.first, p.second);
+
+        int remain = tasks.size(), step = 0;
+        unordered_map<int, char> stepMap;
+
+        while (remain > 0) {
+            if (que.size()) {
+                auto t = que.top().key; 
+                que.pop();
+                --remain;
+                if (--amountMap[t] > 0) stepMap[step + n] = t;      // 还有未完成的，加入map，到了指定的step就加回来priority_queue 
+            } else {
+                // idle
+            }
+
+            if (stepMap.count(step)) {
+                auto t = stepMap[step];
+                que.emplace(t, amountMap[t]);
+                stepMap.erase(step);
+            } 
+            ++step;
+        }
+        return step;  
+    }
+};
 */
 
 // solution 3: 桶思想, ans = max(tasks.size(),  (A-1) * (n + 1) + B); 其中 A 是所有任务种类中任务数最大的值， B是任务数为A个的任务种类数
