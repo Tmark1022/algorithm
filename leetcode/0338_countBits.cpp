@@ -16,8 +16,8 @@
 using namespace std;
 
 /*
-	solution 1: 常规解法, n & (n-1) 计算单个数的比特位; 对于每一个数， 时间复杂度为k, k为该数的1比特位数
-			时间复杂度 O(N*k), 空间复杂度O(1)
+	solution 1: 常规解法, n & (n-1) 计算单个数的比特位; 对于每一个数， 时间复杂度为k, k为该数的1比特位数, k <= ceil(logn)
+			时间复杂度 O(N*k), 即O(N*logN) 空间复杂度O(1)
 	solution 2: 模仿__builtin_popcount函数的实现(类似分治思想), 计算单个数的比特位; 对于每一个数， 时间复杂度为O(logm), m 为数值的总位数， 如int为32位, log(32) == 5
 			时间复杂度 O(N*logm), 空间复杂度O(1)
 	
