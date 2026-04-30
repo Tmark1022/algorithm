@@ -22,6 +22,7 @@ using namespace std;
 	solution 3: 不使用循环，类似分治思想
 
 	solution 4: 使用bitset实现, uint32_t -> bitset<32> -> uint32_t
+	solution 5: 类似solution4 , 高低位swap， 只不过是纯位运算实现
 	*/
 
 /*
@@ -110,6 +111,23 @@ public:
 	return bits.to_ulong();
     }
 };
+
+// solution 5:
+/*
+// class Solution {
+public:
+    int reverseBits(int n) {
+        unsigned int h = 1 << 31, l = 1;
+        for (unsigned int h = 1 << 31, l = 1; h > l; h >>= 1, l <<= 1) {
+            if ((n&h && n&l) || (!(n&h) && !(n&l))) continue;    // 高低bit相同， 啥也不干
+            // flip 相应的bit
+            n ^= h;
+            n^= l;
+        }
+        return n;
+    }
+};
+*/
 
 int main(int argc, char *argv[]) {
 

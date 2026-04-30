@@ -90,6 +90,7 @@ public:
 };
 */
 
+/*
 // solution 3: 归并排序 + 索引数组
 class Solution {
 public:
@@ -129,6 +130,46 @@ public:
 		cache[idx++] = i <= mid && (j > high || collation[index[i]] <= collation[index[j]]) ? index[i++] : index[j++];
 	}
 	copy(cache.begin() + low, cache.begin() + high + 1, index.begin() + low);
+    }
+};
+*/
+
+// solution 3: merge sort
+class Solution {
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        vector<pair<int, int>> arr, tmp(nums.size());
+        for (int i = 0; i < nums.size(); ++i) arr.emplace_back(nums[i], i);
+        vector<int> res(nums.size(), 0);
+        mergeSort(arr, tmp, 0, arr.size() - 1, 0, res);
+        return res;
+    }
+
+    void mergeSort(vector<pair<int,int>> &arr, vector<pair<int, int>> &tmp, int lidx, int hidx, int lv, vector<int> &res) {
+        if (lidx == hidx) {
+            if (lv & 1) tmp[lidx] = arr[lidx];
+            return ;
+        }
+
+        int mid = lidx + (hidx - lidx) / 2;
+        mergeSort(arr, tmp, lidx, mid, lv + 1, res);
+        mergeSort(arr, tmp, mid+1, hidx, lv + 1, res);
+
+        (lv&1) ? doMerge(arr, tmp, lidx, mid, hidx, res) : doMerge(tmp, arr, lidx, mid, hidx, res);
+    }
+
+    void doMerge(vector<pair<int, int>> &src, vector<pair<int, int>> &dst, int lidx, int mid, int hidx, vector<int> &res) {
+        // 统计逆序对个数
+        for (int i = lidx, j = mid + 1; i <= mid; ++i) {
+            while (j <= hidx && src[i].first > src[j].first) ++j;
+            res[src[i].second] += j - (mid + 1);
+        }
+
+        // merge
+        int l = lidx, r = mid + 1, t = lidx;
+        while (l <= mid || r <= hidx) {
+            dst[t++] = (l <= mid && (r > hidx || src[l].first <= src[r].first)) ? src[l++] : src[r++];
+        }
     }
 };
 
