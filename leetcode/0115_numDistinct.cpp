@@ -100,17 +100,17 @@ public:
 class Solution {
 public:
     int numDistinct(string s, string t) {
-            int m = s.size(), n = t.size(), prev = 0, cur = 1;
-	    // unsigned long long 避免有些测试用例溢出
-            vector<vector<unsigned long long>> dp(2, vector<unsigned long long >(n+1, 0));
-            dp[0][0] = dp[1][0] = 1;
-            for (int i = 1; i <= m; ++i) {
-                    for (int j = 1; j <= n; ++j) {
-                            dp[cur][j] = dp[prev][j] + (s[i-1] == t[j-1] ? dp[prev][j-1] : 0);
-                    }
-                    swap(cur, prev);
+        int m = s.size(), n = t.size();
+	// unsigned long long 避免有些测试用例溢出
+        vector<unsigned long long> dp(n+1, 0);
+        dp[0] = 1;
+        for (int i = 1; i <= m; ++i) {
+            for (int j = n; j > 0; --j) {
+                if (s[i-1] != t[j-1]) continue;
+                dp[j] += dp[j-1];
             }
-            return dp[prev].back();
+        }
+        return dp.back();
     }
 };
 
