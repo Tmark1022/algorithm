@@ -79,25 +79,19 @@ public:
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
-	vector<int> remains(26, 0), ans;
-	for (auto &ch : p) ++remains[ch - 'a'];	
-	
-	int distance = p.size();	
-	for (int bidx = 0, eidx = 0; eidx < s.size(); ++eidx) {
-		// 右指针
-		if (--remains[s[eidx] - 'a'] >= 0) --distance;
-		// 滑动窗口大小， 左指针
-		if (eidx - bidx + 1 > p.size()) {
-			if (++remains[s[bidx] - 'a'] > 0) ++distance; 	
-			++bidx;
-		}
-		// 记录结果		
-		if (!distance) ans.push_back(bidx);
-	}
-	return ans;
+        vector<int> res;
+        int count = p.size(), plen = p.size();
+        unordered_map<char, int> mm;
+        for (auto ch : p) ++mm[ch];
+        for (int i = 0; i < s.size(); ++i) {
+            if (--mm[s[i]] >= 0) --count;
+            int startIdx = i - plen + 1;
+            if (!count) res.push_back(startIdx);
+            if (startIdx >= 0 && ++mm[s[startIdx]] > 0) ++count;
+        }
+        return res;
     }
 };
-
 
 int main(int argc, char *argv[]) {
 
