@@ -75,19 +75,18 @@ public:
 */
 
 
-// solution 2:
+// solution 2: 滑动窗口
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
-        vector<int> res;
-        int count = p.size(), plen = p.size();
         unordered_map<char, int> mm;
         for (auto ch : p) ++mm[ch];
-        for (int i = 0; i < s.size(); ++i) {
-            if (--mm[s[i]] >= 0) --count;
-            int startIdx = i - plen + 1;
-            if (!count) res.push_back(startIdx);
-            if (startIdx >= 0 && ++mm[s[startIdx]] > 0) ++count;
+
+        vector<int> res;
+        for (int idx = 0, count = p.size(), sidx = 1 - count; idx < s.size(); ++idx, ++sidx) {
+            if (--mm[s[idx]] >= 0) --count;
+            if (!count) res.push_back(sidx);
+            if (sidx >= 0 && ++mm[s[sidx]] > 0) ++count;
         }
         return res;
     }
