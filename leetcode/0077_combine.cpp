@@ -189,9 +189,28 @@ public:
 	return Generate(n, k, cache);
     }
 };
+
+// solution 3: dp, build dp table + bottom-up
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<vector<int>>> dp(k+1);
+        dp[0].emplace_back();
+        for (int i = 1; i <= n; ++i) {
+            for (int j = min(i, k); j > 0; --j) {
+                for (auto &vec : dp[j-1]) {
+                    dp[j].push_back(vec);
+                    dp[j].back().push_back(i);
+                }
+            }
+        }
+        return dp.back();
+    }
+};
+
 */
 
-
+/*
 // solution 4: 字典序
 class Solution {
 public:
@@ -217,6 +236,30 @@ public:
 	}
 
 	return ans;
+    }
+};
+*/
+
+// solution 4: 字典序
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> res;
+        vector<int> tmp(k+1);
+        for (int i = 0; i < k; ++i) tmp[i] = i+1;
+        tmp.back() = n+1;
+        int idx;
+        do {
+            res.emplace_back(tmp.begin(), tmp.end()-1);
+            for (idx = 0; idx < k; ++idx) {
+                if (tmp[idx] + 1 == tmp[idx+1]) tmp[idx] = idx+1;
+                else {
+                    ++tmp[idx];
+                    break;
+                }
+            }
+        } while(idx < k);
+        return res;
     }
 };
 
