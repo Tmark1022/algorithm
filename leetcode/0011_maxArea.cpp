@@ -31,8 +31,36 @@ public:
     	}
 	*/
 
+        /*
+        // solution 2: 建立lmax 和 rmax 索引， 然后枚举下标i为容器高度时能盛下的水;
+        // time complexity O(N^2)
+        class Solution {
+        public:
+            int maxArea(vector<int>& height) {
+                int len = height.size(), res = 0;
+                vector<int> rmax(len), lmax(len);
 
-	// solution 2: 双指针， 左右夹逼, 缩减搜索空间， 减少问题规模
+                // 构建索引
+                lmax[0] = 0;
+                for (int i = 1; i < len; ++i) lmax[i] = height[i] > height[lmax[i-1]] ? i : lmax[i-1];
+                rmax[len-1] = len-1; 
+                for (int i = len - 2; i >= 0; --i) rmax[i] = height[i] > height[rmax[i+1]] ? i : rmax[i+1];
+
+                // 枚举高度 
+                for (int i = 0; i < len; ++i) {
+                    for (int j = i; j >= 0 && height[i] <= height[lmax[j]]; j = lmax[j] - 1) {
+                        res = max(res, height[i] * (i - lmax[j])); 
+                    }  
+                    for (int j = i; j < len && height[i] <= height[rmax[j]]; j = rmax[j] + 1) {
+                        res = max(res, height[i] * (rmax[j] - i));
+                    }
+                }
+                return res;
+            }
+        }; 
+        */
+
+	// solution 3: 双指针， 左右夹逼, 缩减搜索空间， 减少问题规模
 	// 每次取最左i和最右j指针， 有height[i] < height[j], 那么有area = (j - i) * min(height[i], height[j]); 
 	// 计算完这个area后， 我们就需要考虑如何缩减问题规模了； 现在有左右指针， 如果固定小的一边， 如在这里就是固定i， 将值大的右指针j往中间移动， 那么对于之后任意构成的容器， 因为高度最大就是i的高度, 但是因为宽度的缩减， 所以构成的容器永远小于第一次计算的area， 所以对于固定i的情况[固定小边]可以完全排除【因为后续不可能有固定i边还能找到比最先计算的area要大的容器了】, 将问题规模减1
 	//
@@ -47,6 +75,10 @@ public:
 		}
 		return max;
     	}
+
+
+
+
 
 };
 
