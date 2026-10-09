@@ -17,7 +17,7 @@
 using namespace std;
 
 /*
-	solution 1: 后缀表达式计算思想， 使用一个栈存放操作数; 因为表达式中没有括号， 所以可以遇到乘除法就马上计算，加减法放置在操作数栈中， 最终再将栈中所有操作数进行加法计算。<O(N), O(N)>
+	solution 1: 乘除除法立刻计算， 剩余加减法; 使用vector记录剩余的加减法数值; 最后剩余的加减法数值累起来即最终结果
 	solution 2: 后缀表达式方式, 使用两个栈。 <O(N), O(N)>
 	solution 3: 数学方式， 寻找规律， 进行消除。 <O(1), O(1)>
    */
@@ -27,23 +27,18 @@ using namespace std;
 // solution 1:
 class Solution {
 public:
-    int clumsy(int N) {
-	int op = 0, ans = 0;
-	stack<int> stk; 	
-	stk.push(N);
-	for (int i = N-1; i >= 1; --i, ++op) {
-		if (op % 4 == 0) stk.top() *= i;	
-		else if (op % 4 == 1) stk.top() /= i;
-		else if (op % 4 == 2) stk.push(i);
-		else stk.push(-i);		
-	}	
-	while (!stk.empty()) {
-		ans += stk.top();
-		stk.pop();
-	}	
-	return ans;
+    int clumsy(int n) {
+        vector<int> vec = {n--};
+        for (int op = 0; n; --n, op = (op + 1) % 4) {
+            if (0 == op) vec.back() *= n; 
+            else if (1 == op) vec.back() /= n;
+            else if (2 == op) vec.push_back(n);
+            else vec.push_back(-n);
+        }
+        return accumulate(vec.begin(), vec.end(), 0);
     }
 };
+
 
 // solution 2:
 class Solution {
