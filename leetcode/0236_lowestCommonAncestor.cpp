@@ -61,6 +61,38 @@ public:
     }
 };
 
+// solution 1: bactracking
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        vector<TreeNode*> tmp;
+        vector<vector<TreeNode*>> path;
+        bactracking(root, p, q, tmp, path);
+        if (path.size() == 1) return path.back().back();
+        else {
+            TreeNode *res = nullptr;
+            int idx = 0;
+            while (path[1][idx] == path[0][idx]) {
+                res = path[1][idx++];
+            }
+            return res;
+        }
+    }
+
+    void bactracking(TreeNode *root, TreeNode *p, TreeNode *q, vector<TreeNode*> &tmp, vector<vector<TreeNode*>> &path) {
+        if (!root) return ;
+        tmp.push_back(root);
+        if (root == p || root == q) {
+            path.push_back(tmp);
+        } else {
+            bactracking(root->left, p, q, tmp, path);
+            bactracking(root->right, p, q, tmp, path);
+        }
+        tmp.pop_back();
+    }
+
+};
+
 // solution 2: hashtable
 class Solution {
 public:
