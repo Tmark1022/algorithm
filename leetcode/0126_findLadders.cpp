@@ -168,6 +168,60 @@ public:
     }
 };
 
+
+// solution 2: bfs + dfs
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> wordSet(wordList.begin(), wordList.end()), tmpSet;
+        wordSet.erase(beginWord);
+        if (!wordSet.count(endWord)) return {};
+        unordered_map<string, vector<string>> mm;
+        deque<string> que = {beginWord};
+
+        bool bingo = false;
+        while (que.size() && !bingo) {
+            tmpSet =  wordSet;
+            for (int cnt = que.size(); cnt; --cnt) {
+                string cur = que.front();
+                for (auto &e : cur) {
+                    auto tmp = e;
+                    for (char ch = 'a'; ch <= 'z'; ++ch) {
+                        e = ch;
+                        if (!tmpSet.count(cur)) continue;
+                        mm[cur].push_back(que.front());
+                        if (!wordSet.count(cur)) continue;
+                        wordSet.erase(cur);
+                        que.push_back(cur);
+                        if (cur == endWord) bingo = true;
+                    }
+                    e = tmp;
+                }
+                que.pop_front();
+            }
+        };
+
+        vector<string> path;
+        vector<vector<string>> res;
+        backtracking(endWord, beginWord, mm, path, res);
+        return res;
+    }
+
+    void backtracking(string &word, const string &tarWord, unordered_map<string, vector<string>> &mm, vector<string> &path, vector<vector<string>> &res) {
+        path.push_back(word);
+
+        if (word == tarWord) {
+            res.emplace_back(path.rbegin(), path.rend());
+        } else {
+            for (auto &str : mm[word]) {
+                backtracking(str, tarWord, mm, path, res);
+            }
+        }
+        path.pop_back();
+    }
+};
+
+
 // solution 3: 双向BFS + DFS
 class Solution {
 public:
@@ -243,6 +297,69 @@ public:
 		dfs(adj, eid, tmp, ans, edge, wordList);
 		tmp.pop_back();
 	}
+    }
+};
+
+
+// solution 3: bi-bfs + dfs
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> wordSet(wordList.begin(), wordList.end()), s1 = {beginWord}, s2 = {endWord}, *head = &s1, *tail = &s2, tmpSet;
+        if (!wordSet.count(endWord)) return {};
+        wordSet.erase(beginWord);
+        wordSet.erase(endWord);
+        unordered_map<string, vector<string>> mm;
+        bool bingo = false, direct = true;
+        while (head->size() && tail->size() && !bingo) {
+            if (head->size() > tail->size()) {
+                swap(head, tail);
+                direct = !direct;
+            }
+            tmpSet.clear();
+
+            for (string cur : *head) {
+                string tmpStr = cur;
+                for (auto &e : cur) {
+                    auto tmp = e;
+                    for (char ch = 'a'; ch <= 'z'; ++ch) {
+                        e = ch;
+                        if (!wordSet.count(cur) && !tail->count(cur)) continue;
+                        if (direct) mm[cur].push_back(tmpStr);
+                        else mm[tmpStr].push_back(cur);
+                        if (tail->count(cur)) bingo = true;
+                        else tmpSet.insert(cur);
+                    }
+                    e = tmp;
+                }
+            }
+
+            for (auto &str : tmpSet) {
+                wordSet.erase(str);
+            }
+
+            *head = tmpSet;
+        }
+
+        if (!bingo) return {};
+
+        vector<string> path;
+        vector<vector<string>> res;
+        backtracking(endWord, beginWord, mm, path, res);
+        return res;
+    }
+
+    void backtracking(string &word, const string &tarWord, unordered_map<string, vector<string>> &mm, vector<string> &path, vector<vector<string>> &res) {
+        path.push_back(word);
+
+        if (word == tarWord) {
+            res.emplace_back(path.rbegin(), path.rend());
+        } else {
+            for (auto &str : mm[word]) {
+                backtracking(str, tarWord, mm, path, res);
+            }
+        }
+        path.pop_back();
     }
 };
 */
