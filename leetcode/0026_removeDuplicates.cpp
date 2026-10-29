@@ -15,17 +15,34 @@ using std::endl;
 using std::vector;
 using std::string;
 
-// solution 1: 双指针
+
+
+/*
+// solution 1: 借助一个辅助数组
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
-	if (!nums.size()) return 0;
-	int p = 0;
-	for (int i = 1; i < nums.size(); ++i) {
-		if (nums[i] == nums[p]) continue;
-		nums[++p] = nums[i]; 
-	}
-	return p+1;
+        vector<int> tmp;
+        for (auto &val : nums) {
+            if (tmp.size() && tmp.back() == val) continue;
+            tmp.push_back(val);
+        }
+        nums = tmp;
+        return nums.size();
+    }
+};
+*/
+
+// solution 2: 原地修改
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int k = 1;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i] == nums[i-1]) continue;
+            nums[k++] = nums[i];
+        }
+        return k;
     }
 };
 
