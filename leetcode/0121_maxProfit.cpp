@@ -61,6 +61,20 @@ public:
     }
 };
 
+// solution 1: 枚举每一天的价格， 假设都是之前最低价买入， 求max
+// O(N)
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int res = 0, minP = INT_MAX;
+        for (auto &e : prices) {
+            res = max(res, e - minP);
+            minP = min(minP, e);
+        }
+        return res;
+    }
+};
+
 
 // solution 2.1 : 单调栈
 class Solution {
@@ -101,7 +115,7 @@ public:
 };
 
 /*
-// solution 3: 单调栈思路， 一遍循环 
+// solution 3: 单调栈思路， 一遍循环 (即 solution 1)
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
