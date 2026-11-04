@@ -102,6 +102,34 @@ public:
 
 
 /*
+// solution 2: 每次一层BFS， 引入 rm 记录最远可访问下标【同理可以认为rm之前的都已visited】， 降低adjacent vertex 访问个数
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int len = nums.size();
+        if (len <= 1) return 0;
+        deque<int> que = {0};
+        int rm = 0, step = 0;
+        while (que.size()) {
+            ++step;
+            for (int cnt = que.size(); cnt; --cnt) {
+                auto idx = que.front();
+                que.pop_front();
+                for (int i = rm + 1; i <= min(idx + nums[idx], len - 1); ++i) {
+                    que.push_back(i);
+                }
+                rm = max(rm, idx + nums[idx]);
+                if (rm >= len - 1) return step;
+            }
+        }
+        return step;
+    }
+};
+*/
+
+
+
+/*
 // solution 3:类似BFS？
 class Solution {
 public:
@@ -195,6 +223,19 @@ public:
             }
             lastMaxId = maxIdx;
             maxIdx = tmp;
+        }
+        return step;
+    }
+};
+
+// solution 6:  同上， 每次一层 BFS 思路 简化写法
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int len = nums.size(), step = 0, boundry = 0, rm = 0;           // rm 最远右侧下边， boundry 当前step对应的右侧下标idx
+        for (int i = 0; boundry < len - 1; ++i) {
+            rm = max(rm, i + nums[i]);
+            if (i == boundry) ++step, boundry = rm;
         }
         return step;
     }
